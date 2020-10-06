@@ -1,0 +1,27 @@
+{
+  "name": "lalamove-node",
+  "version": "1.0.0",
+  "description": "Lalamove Api node implementation",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stark-tech-space/lalamove-node.git"
+  },
+  "keywords": [
+    "lalamove"
+  ],
+  "author": "Stark Tech",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stark-tech-space/lalamove-node/issues"
+  },
+  "homepage": "https://github.com/stark-tech-space/lalamove-node#readme",
+  "devDependencies": {
+    "@types/node": "^14.11.5",
+    "typescript": "^4.0.3"
+  }
+}
