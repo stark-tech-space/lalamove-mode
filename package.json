@@ -2,10 +2,12 @@
   "name": "lalamove-node",
   "version": "1.0.0",
   "description": "Lalamove Api node implementation",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest",
-    "build": "tsc"
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "prepublishOnly": "npm test"
   },
   "repository": {
     "type": "git",
@@ -21,7 +23,16 @@
   },
   "homepage": "https://github.com/stark-tech-space/lalamove-node#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.14",
     "@types/node": "^14.11.5",
+    "jest": "^26.5.0",
+    "ts-jest": "^26.4.1",
     "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "date-fns": "^2.16.1",
+    "lodash": "^4.17.20",
+    "uuidv4": "^6.2.4"
   }
 }
