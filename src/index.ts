@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import getUnixTime from 'date-fns/fp/getUnixTime';
 import formatISO from 'date-fns/fp/formatISO';
 import * as crypto from 'crypto';
-import { uuid as uuidv4 } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
 export enum Country {
 	TW = 'TW',
@@ -29,6 +29,16 @@ export enum ServiceTypeTW {
 export enum SpecialRequestTW {
 	LALABAG = 'LALABAG',
 	HELP_BUY = 'HELP_BUY',
+}
+
+export enum LalamoveOrderStatus {
+	ASSIGNING_DRIVER = 'ASSIGNING_DRIVER',
+	ON_GOING = 'ON_GOING',
+	PICKED_UP = 'PICKED_UP',
+	COMPLETED = 'COMPLETED',
+	REJECTED = 'REJECTED',
+	CANCELLED = 'CANCELLED',
+	EXPIRED = 'EXPIRED',
 }
 
 export type lalamove = {
@@ -60,6 +70,7 @@ export type ServiceType = {
 
 export type Address = {
 	displayName: string;
+	country?: Country;
 };
 
 export type WayPoint = {
@@ -96,15 +107,52 @@ export type quoteRequest = {
 
 export interface orderPlacementRequest extends quoteRequest {
 	totalFee: {
-		amount: number;
+		amount: string;
 		currency: string;
 	};
 	smsForReceiver: boolean;
 }
 
-export const language: { [country in Country]: Languages[Country][] } = {
-	TW: [LanguagesTW.zh_TW],
+export type quoteResponse = {
+	totalFee: string;
+	totalFeeCurrency: string;
 };
+
+export type orderPlacementResponse = {
+	customerOrderId: string;
+	orderRef: string;
+};
+
+export type orderDetailResponse = {
+	status: LalamoveOrderStatus;
+	price: {
+		amount: string;
+		currency: string;
+	};
+	driverId: string;
+};
+
+export type driverDetailResponse = {
+	name: string;
+	phone: string;
+	plateNumber: string;
+	photo: string;
+};
+
+export type driverLocationResponse = {
+	location: {
+		lat: string;
+		lng: string;
+	};
+};
+
+export type cancelOrderResponse = object;
+
+export class LalamoveException extends Error {
+	constructor(status: number, message: string) {
+		super(`http status: ${status}, message: ${message}`);
+	}
+}
 
 export class Lalamove {
 	private apiInfo: ApiInfo; // all property related to lalamove API
@@ -133,7 +181,7 @@ export class Lalamove {
 	}
 
 	// do request with lalamove api
-	async request({ url, method, body }: requestInfo): Promise<object> {
+	private async request({ url, method, body }: requestInfo): Promise<any> {
 		const { country, apiKey, apiSecret } = this.apiInfo;
 		const nowTimestamp = getUnixTime(new Date());
 
@@ -163,7 +211,7 @@ export class Lalamove {
 			const response = await requestMapping[method]();
 			return response.data;
 		} catch (error) {
-			let status: number, data: object;
+			let status: number, data: { message: string };
 			if (error.response) {
 				// out of range of 2xx response
 				status = error.response.status;
@@ -183,10 +231,9 @@ export class Lalamove {
 				};
 			}
 
-			return {
-				status,
-				data,
-			};
+			console.log('status', status);
+			console.log('data', data);
+			throw new LalamoveException(status, data.message);
 		}
 	}
 
@@ -197,11 +244,17 @@ export class Lalamove {
 		sender,
 		scheduleAt,
 		specialRequest,
-	}: quoteRequest) {
+	}: quoteRequest): Promise<quoteResponse> {
 		// create request body
 		const requestBody = {
 			serviceType,
-			stops: destinations,
+			stops: destinations.map(({ location, addresses }) => {
+				addresses.zh_TW.country = this.apiInfo.country;
+				return {
+					location,
+					addresses,
+				};
+			}),
 			deliveries: deliveryInfo.map(({ stopIndex, receiver, remarks }) => {
 				return {
 					toStop: stopIndex,
@@ -234,7 +287,7 @@ export class Lalamove {
 		specialRequest,
 		totalFee,
 		smsForReceiver,
-	}: orderPlacementRequest) {
+	}: orderPlacementRequest): Promise<orderPlacementResponse> {
 		// create request body
 		const requestBody = {
 			serviceType,
@@ -264,28 +317,34 @@ export class Lalamove {
 		});
 	}
 
-	async orderDetail(orderId: string) {
+	async orderDetail(orderId: string): Promise<orderDetailResponse> {
 		return this.request({
 			url: `/orders/${orderId}`,
 			method: HttpMethod.GET,
 		});
 	}
 
-	async driverDetail(orderId: string, driverId: string) {
+	async driverDetail(
+		orderId: string,
+		driverId: string
+	): Promise<driverDetailResponse> {
 		return this.request({
 			url: `/orders/${orderId}/drivers/${driverId}`,
 			method: HttpMethod.GET,
 		});
 	}
 
-	async driverLocation(orderId: string, driverId: string) {
+	async driverLocation(
+		orderId: string,
+		driverId: string
+	): Promise<driverLocationResponse> {
 		return this.request({
 			url: `/orders/${orderId}/drivers/${driverId}/location`,
 			method: HttpMethod.GET,
 		});
 	}
 
-	async cancelOrder(orderId: string) {
+	async cancelOrder(orderId: string): Promise<cancelOrderResponse> {
 		return this.request({
 			url: `/orders/${orderId}/cancel`,
 			method: HttpMethod.PUT,

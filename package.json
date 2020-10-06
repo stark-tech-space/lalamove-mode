@@ -30,9 +30,10 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
+    "@types/uuid": "^8.3.0",
     "axios": "^0.20.0",
     "date-fns": "^2.16.1",
     "lodash": "^4.17.20",
-    "uuidv4": "^6.2.4"
+    "uuid": "^8.3.1"
   }
 }
