@@ -61,7 +61,7 @@ typings/
 .next
 
 #distribution dir
-dist/
+lib/
 
 #test configuration file
 .test-config.json
