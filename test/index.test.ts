@@ -8,7 +8,7 @@ const lalamove = new Lalamove({
 	country: Country.TW,
 });
 
-describe('Lalamove Integration Test', () => {
+describe.skip('Lalamove Integration Test', () => {
 	it('should pass the assertions', async () => {
 		const quotation = await lalamove.getQuote({
 			serviceType: ServiceTypeTW.MOTORCYCLE,

@@ -3,18 +3,17 @@
   "version": "0.1.0",
   "description": "Lalamove Api node implementation",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stark-tech-space/lalamove-node.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/stark-tech-space"
   },
   "keywords": [
     "lalamove"
@@ -35,6 +34,7 @@
     "@types/node": "^14.11.5",
     "@types/uuid": "^8.3.0",
     "axios": "^0.20.0",
+    "crypto": "^1.0.1",
     "date-fns": "^2.16.1",
     "lodash": "^4.17.20",
     "uuid": "^8.3.1"
