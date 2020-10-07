@@ -61,6 +61,7 @@ jobs:
         with:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
+          scope: '@stark-tech-space'
       - run: npm install
       - run: npm run build --if-present
       # Publish to npm
