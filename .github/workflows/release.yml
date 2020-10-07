@@ -73,7 +73,7 @@ jobs:
         with:
           registry-url: 'https://npm.pkg.github.com'
           # Defaults to the user or organization that owns the workflow file
-          scope: '@uteam-tw'
+          scope: '@stark-tech-space'
       # Publish to GitHub Packages
       - name: Publish to Github Packages
         run: npm publish
