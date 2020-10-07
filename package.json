@@ -1,6 +1,6 @@
 {
   "name": "lalamove-node",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lalamove Api node implementation",
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "url": "git+https://github.com/stark-tech-space/lalamove-node.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/stark-tech-space"
+    "registry": "https://npm.pkg.github.com/@stark-tech-space"
   },
   "keywords": [
     "lalamove"
