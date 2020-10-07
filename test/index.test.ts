@@ -2,7 +2,7 @@ import { Country, ServiceTypeTW, Lalamove, SpecialRequestTW } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
 
 const lalamove = new Lalamove({
-	baseUrl: 'https://sandbox-rest.lalamove.com/v2',
+	baseUrl: 'https://sandbox-rest.lalamove.com/',
 	apiKey: '',
 	apiSecret: '',
 	country: Country.TW,

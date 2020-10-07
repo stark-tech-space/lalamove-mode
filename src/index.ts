@@ -144,6 +144,7 @@ export type driverLocationResponse = {
 		lat: string;
 		lng: string;
 	};
+	updatedAt: string;
 };
 
 export type cancelOrderResponse = object;
@@ -272,7 +273,7 @@ export class Lalamove {
 		};
 
 		return this.request({
-			url: '/quotations',
+			url: '/v2/quotations',
 			method: HttpMethod.POST,
 			body: requestBody,
 		});
@@ -311,7 +312,7 @@ export class Lalamove {
 		};
 
 		return this.request({
-			url: '/orders',
+			url: '/v2/orders',
 			method: HttpMethod.POST,
 			body: requestBody,
 		});
@@ -319,7 +320,7 @@ export class Lalamove {
 
 	async orderDetail(orderId: string): Promise<orderDetailResponse> {
 		return this.request({
-			url: `/orders/${orderId}`,
+			url: `/v2/orders/${orderId}`,
 			method: HttpMethod.GET,
 		});
 	}
@@ -329,7 +330,7 @@ export class Lalamove {
 		driverId: string
 	): Promise<driverDetailResponse> {
 		return this.request({
-			url: `/orders/${orderId}/drivers/${driverId}`,
+			url: `/v2/orders/${orderId}/drivers/${driverId}`,
 			method: HttpMethod.GET,
 		});
 	}
@@ -339,14 +340,14 @@ export class Lalamove {
 		driverId: string
 	): Promise<driverLocationResponse> {
 		return this.request({
-			url: `/orders/${orderId}/drivers/${driverId}/location`,
+			url: `/v2/orders/${orderId}/drivers/${driverId}/location`,
 			method: HttpMethod.GET,
 		});
 	}
 
 	async cancelOrder(orderId: string): Promise<cancelOrderResponse> {
 		return this.request({
-			url: `/orders/${orderId}/cancel`,
+			url: `/v2/orders/${orderId}/cancel`,
 			method: HttpMethod.PUT,
 		});
 	}
