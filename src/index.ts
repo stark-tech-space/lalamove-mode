@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import getUnixTime from 'date-fns/fp/getUnixTime';
+import getTime from 'date-fns/fp/getTime';
 import formatISO from 'date-fns/fp/formatISO';
 import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
@@ -69,7 +69,7 @@ export type ServiceType = {
 };
 
 export type Address = {
-	displayName: string;
+	displayString: string;
 	country?: Country;
 };
 
@@ -78,7 +78,7 @@ export type WayPoint = {
 		lat: number;
 		lng: number;
 	};
-	addresses: { [languageCode in Languages[Country]]: Address };
+	addresses: { [languageCode in Languages[Country]]?: Address };
 };
 
 export type Contact = {
@@ -184,7 +184,7 @@ export class Lalamove {
 	// do request with lalamove api
 	private async request({ url, method, body }: requestInfo): Promise<any> {
 		const { country, apiKey, apiSecret } = this.apiInfo;
-		const nowTimestamp = getUnixTime(new Date());
+		const nowTimestamp = getTime(new Date());
 
 		// get signature from api config and request information
 		const rawForSignature = `${nowTimestamp}\r\n${method}\r\n${url}\r\n\r\n${
@@ -201,6 +201,9 @@ export class Lalamove {
 				'X-Request-ID': uuidv4(),
 			},
 		};
+
+		console.log(headers);
+		console.log(JSON.stringify(body, null, 2))
 		const requestMapping: { [key in HttpMethod]: Function } = {
 			GET: () => this.requestInstance.get(url, headers),
 			POST: () => this.requestInstance.post(url, body, headers),
@@ -238,6 +241,14 @@ export class Lalamove {
 		}
 	}
 
+	getCountry() {
+		return this.apiInfo.country;
+	}
+
+	setCountry(country: Country) {
+		this.apiInfo.country = country;
+	}
+
 	async getQuote({
 		serviceType,
 		destinations,
@@ -250,6 +261,10 @@ export class Lalamove {
 		const requestBody = {
 			serviceType,
 			stops: destinations.map(({ location, addresses }) => {
+				if (!addresses.zh_TW) {
+					throw new LalamoveException(400, 'addresses for zh_TW does not exist');
+				}
+				
 				addresses.zh_TW.country = this.apiInfo.country;
 				return {
 					location,

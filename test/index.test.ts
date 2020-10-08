@@ -2,13 +2,13 @@ import { Country, ServiceTypeTW, Lalamove, SpecialRequestTW } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
 
 const lalamove = new Lalamove({
-	baseUrl: 'https://sandbox-rest.lalamove.com/',
-	apiKey: '',
-	apiSecret: '',
+	baseUrl: 'https://sandbox-rest.lalamove.com',
+	apiKey: 'c261c1d23a3749ca9111699b55c6139b',
+	apiSecret: 'MCwCAQACBQDqKHyrAgMBAAECBQDpfV3BAgMA96UCAwDyDwICE',
 	country: Country.TW,
 });
 
-describe.skip('Lalamove Integration Test', () => {
+describe('Lalamove Integration Test', () => {
 	it('should pass the assertions', async () => {
 		const quotation = await lalamove.getQuote({
 			serviceType: ServiceTypeTW.MOTORCYCLE,
@@ -20,7 +20,18 @@ describe.skip('Lalamove Integration Test', () => {
 					},
 					addresses: {
 						zh_TW: {
-							displayName: '台北市大安區敦化南路一段337號',
+							displayString: '台北市大安區敦化南路一段337號',
+						},
+					},
+				},
+				{
+					location: {
+						lat: 25.033674479947212,
+						lng: 121.54918243013232,
+					},
+					addresses: {
+						zh_TW: {
+							displayString: '台北市大安區敦化南路一段337號',
 						},
 					},
 				},
@@ -61,7 +72,7 @@ describe.skip('Lalamove Integration Test', () => {
 					},
 					addresses: {
 						zh_TW: {
-							displayName: '台北市大安區敦化南路一段337號',
+							displayString: '台北市大安區敦化南路一段337號',
 						},
 					},
 				},
