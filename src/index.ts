@@ -1,8 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-import getUnixTime from 'date-fns/fp/getUnixTime';
-import formatISO from 'date-fns/fp/formatISO';
-import * as crypto from 'crypto';
+import getTime from 'date-fns/fp/getTime';
+import format from 'date-fns-tz/format';
 import { v4 as uuidv4 } from 'uuid';
+import CryptoJS from 'crypto-js';
+import phin from 'phin';
 
 export enum Country {
 	TW = 'TW',
@@ -68,17 +68,19 @@ export type ServiceType = {
 	TW: ServiceTypeTW;
 };
 
+export type Location = {
+	lat: number;
+	lng: number;
+};
+
 export type Address = {
-	displayName: string;
+	displayString: string;
 	country?: Country;
 };
 
 export type WayPoint = {
-	location: {
-		lat: number;
-		lng: number;
-	};
-	addresses: { [languageCode in Languages[Country]]: Address };
+	location: Location;
+	addresses: { [languageCode in Languages[Country]]?: Address };
 };
 
 export type Contact = {
@@ -144,6 +146,7 @@ export type driverLocationResponse = {
 		lat: string;
 		lng: string;
 	};
+	updatedAt: string;
 };
 
 export type cancelOrderResponse = object;
@@ -170,15 +173,16 @@ export const specialRequest: {
 };
 
 export class LalamoveException extends Error {
-	constructor(status: number, message: string) {
-		super(`http status: ${status}, message: ${message}`);
+	constructor(status: number, data: object) {
+		super(`http status: ${status}, data: ${JSON.stringify(data)}`);
 	}
 }
 
+const UTC_ZERO_TIMEZONE = 'Europe/London';
+
 export class Lalamove {
 	private apiInfo: ApiInfo; // all property related to lalamove API
-	private requestInstance: AxiosInstance; // axios instance
-	private hashingAlgorithm = 'sha256';
+	private baseUrl: string;
 	private static DEFAULT_TIMEOUT = 3000;
 
 	// Lalamove class constructor
@@ -188,74 +192,105 @@ export class Lalamove {
 			apiKey,
 			apiSecret,
 		};
-		this.requestInstance = axios.create({
-			baseURL: baseUrl,
-			timeout: Lalamove.DEFAULT_TIMEOUT,
-		});
+		this.baseUrl = baseUrl;
 	}
 
 	// create signature for lalamove access token
 	private createSignature(rawForSignature: string, apiSecret: string) {
-		const hashing = crypto.createHmac(this.hashingAlgorithm, apiSecret);
-		hashing.update(rawForSignature);
-		return hashing.digest('hex');
+		return CryptoJS.HmacSHA256(rawForSignature, apiSecret).toString();
 	}
 
 	// do request with lalamove api
-	private async request({ url, method, body }: requestInfo): Promise<any> {
+	private async request({ url, method, body = {} }: requestInfo): Promise<any> {
 		const { country, apiKey, apiSecret } = this.apiInfo;
-		const nowTimestamp = getUnixTime(new Date());
 
-		// get signature from api config and request information
-		const rawForSignature = `${nowTimestamp}\r\n${method}\r\n${url}\r\n\r\n${
-			body ? '' : JSON.stringify(body)
-		}`;
-		const signature = this.createSignature(rawForSignature, apiSecret);
-		const token = `${apiKey}:${nowTimestamp}:${signature}`;
+		const tokenGenerate = () => {
+			const timestamp = getTime(new Date());
+			// get signature from api config and request information
+			const rawForSignature = `${timestamp}\r\n${method}\r\n${url}\r\n\r\n${JSON.stringify(
+				body
+			)}`;
+			const signature = this.createSignature(rawForSignature, apiSecret);
+			const token = `${apiKey}:${timestamp}:${signature}`;
+			return token;
+		};
 
 		// use request mapping callback function object to replace if...else... statement
-		const headers = {
-			headers: {
-				Authorization: `hmac ${token}`,
+		const headers = () => {
+			return {
+				Authorization: `hmac ${tokenGenerate()}`,
 				'X-LLM-Country': country,
 				'X-Request-ID': uuidv4(),
-			},
-		};
-		const requestMapping: { [key in HttpMethod]: Function } = {
-			GET: () => this.requestInstance.get(url, headers),
-			POST: () => this.requestInstance.post(url, body, headers),
-			PUT: () => this.requestInstance.put(url, body, headers),
+				'Content-Type': 'application/json',
+			};
 		};
 
 		// call lalamove and handle errors while response has error(s)
-		try {
-			const response = await requestMapping[method]();
-			return response.data;
-		} catch (error) {
-			let status: number, data: { message: string };
-			if (error.response) {
-				// out of range of 2xx response
-				status = error.response.status;
-				data = error.response.data;
-			} else if (error.request) {
-				// connection timeout
-				status = 408;
-				data = {
-					message: 'Connection Timeout',
-				};
-			} else {
-				// other unexpected error => need to print out error
-				console.error(error);
-				status = -1;
-				data = {
-					message: 'Unexpected Request Error',
-				};
-			}
+		const fetchResult: phin.IResponse = await phin({
+			url: `${this.baseUrl}${url}`,
+			method: method,
+			data: JSON.stringify(body),
+			headers: headers(),
+			timeout: Lalamove.DEFAULT_TIMEOUT,
+		});
 
-			console.log('status', status);
-			console.log('data', data);
-			throw new LalamoveException(status, data.message);
+		// transform result from raw body string to JSON object
+		let response: object;
+		try {
+			response = JSON.parse(fetchResult.body);
+		} catch (error) {
+			console.log('json transform error: ', error);
+			response = {};
 		}
+
+		if (!fetchResult.statusCode) {
+			// no response => unexpected error
+			throw new LalamoveException(-1, {
+				message: 'Unexpected Error',
+			});
+		} else if (fetchResult.statusCode < 200 || fetchResult.statusCode >= 400) {
+			// http status code for error
+			throw new LalamoveException(fetchResult.statusCode, response);
+		}
+
+		return response;
+	}
+
+	private dateStringProcess(date: Date) {
+		const dateString = format(date, 'yyyy-MM-dd', {
+			timeZone: UTC_ZERO_TIMEZONE,
+		});
+		const timeString = format(date, 'HH:mm:ss', {
+			timeZone: UTC_ZERO_TIMEZONE,
+		});
+
+		return `${dateString}T${timeString}Z`;
+	}
+
+	getCountry() {
+		return this.apiInfo.country;
+	}
+
+	setCountry(country: Country) {
+		this.apiInfo.country = country;
+	}
+
+	private stopTransform(stop: WayPoint) {
+		const { location, addresses } = stop;
+		if (!addresses.zh_TW) {
+			throw new LalamoveException(400, {
+				message: 'addresses with "zh_TW" doesn\'t exist',
+			});
+		}
+
+		addresses.zh_TW.country = this.apiInfo.country;
+		return {
+			location: {
+				lat: location.lat.toString(),
+				lng: location.lng.toString(),
+			},
+			addresses,
+		};
 	}
 
 	async getQuote({
@@ -267,15 +302,10 @@ export class Lalamove {
 		specialRequest,
 	}: quoteRequest): Promise<quoteResponse> {
 		// create request body
+
 		const requestBody = {
 			serviceType,
-			stops: destinations.map(({ location, addresses }) => {
-				addresses.zh_TW.country = this.apiInfo.country;
-				return {
-					location,
-					addresses,
-				};
-			}),
+			stops: destinations.map(this.stopTransform.bind(this)),
 			deliveries: deliveryInfo.map(({ stopIndex, receiver, remarks }) => {
 				return {
 					toStop: stopIndex,
@@ -288,12 +318,12 @@ export class Lalamove {
 				};
 			}),
 			requesterContact: sender,
-			scheduleAt: formatISO(scheduleAt),
+			scheduleAt: this.dateStringProcess(scheduleAt),
 			specialRequest,
 		};
 
 		return this.request({
-			url: '/quotations',
+			url: '/v2/quotations',
 			method: HttpMethod.POST,
 			body: requestBody,
 		});
@@ -312,7 +342,7 @@ export class Lalamove {
 		// create request body
 		const requestBody = {
 			serviceType,
-			stops: destinations,
+			stops: destinations.map(this.stopTransform.bind(this)),
 			deliveries: deliveryInfo.map(({ stopIndex, receiver, remarks }) => {
 				return {
 					toStop: stopIndex,
@@ -325,14 +355,14 @@ export class Lalamove {
 				};
 			}),
 			requesterContact: sender,
-			scheduleAt: formatISO(scheduleAt),
+			scheduleAt: this.dateStringProcess(scheduleAt),
 			specialRequest,
 			quotedTotalFee: totalFee,
 			sms: smsForReceiver,
 		};
 
 		return this.request({
-			url: '/orders',
+			url: '/v2/orders',
 			method: HttpMethod.POST,
 			body: requestBody,
 		});
@@ -340,7 +370,7 @@ export class Lalamove {
 
 	async orderDetail(orderId: string): Promise<orderDetailResponse> {
 		return this.request({
-			url: `/orders/${orderId}`,
+			url: `/v2/orders/${orderId}`,
 			method: HttpMethod.GET,
 		});
 	}
@@ -350,7 +380,7 @@ export class Lalamove {
 		driverId: string
 	): Promise<driverDetailResponse> {
 		return this.request({
-			url: `/orders/${orderId}/drivers/${driverId}`,
+			url: `/v2/orders/${orderId}/drivers/${driverId}`,
 			method: HttpMethod.GET,
 		});
 	}
@@ -360,14 +390,14 @@ export class Lalamove {
 		driverId: string
 	): Promise<driverLocationResponse> {
 		return this.request({
-			url: `/orders/${orderId}/drivers/${driverId}/location`,
+			url: `/v2/orders/${orderId}/drivers/${driverId}/location`,
 			method: HttpMethod.GET,
 		});
 	}
 
 	async cancelOrder(orderId: string): Promise<cancelOrderResponse> {
 		return this.request({
-			url: `/orders/${orderId}/cancel`,
+			url: `/v2/orders/${orderId}/cancel`,
 			method: HttpMethod.PUT,
 		});
 	}

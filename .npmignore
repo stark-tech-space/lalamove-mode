@@ -60,8 +60,17 @@ typings/
 # next.js build output
 .next
 
-#distribution dir
-lib/
+# library files
+test-config.json
 
-#test configuration file
-.test-config.json
+# for development
+src
+test
+
+#circleci setting
+.circleci
+
+#git and github stuff
+.git
+.gitignore
+.github
