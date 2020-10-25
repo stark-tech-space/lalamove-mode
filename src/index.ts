@@ -148,6 +148,27 @@ export type driverLocationResponse = {
 
 export type cancelOrderResponse = object;
 
+export const serviceType: {
+	TW: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
+} = {
+	TW: {
+		MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
+		MPV: ServiceTypeTW.MPV,
+		VAN: ServiceTypeTW.VAN,
+		TRUCK175: ServiceTypeTW.TRUCK175,
+		TRUCK330: ServiceTypeTW.TRUCK330,
+	},
+};
+
+export const specialRequest: {
+	TW: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
+} = {
+	TW: {
+		HELP_BUY: SpecialRequestTW.HELP_BUY,
+		LALABAG: SpecialRequestTW.LALABAG,
+	},
+};
+
 export class LalamoveException extends Error {
 	constructor(status: number, message: string) {
 		super(`http status: ${status}, message: ${message}`);
