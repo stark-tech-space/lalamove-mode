@@ -363,7 +363,7 @@ export class Lalamove {
 			}),
 			requesterContact: sender,
 			scheduleAt: this.dateStringProcess(scheduleAt),
-			specialRequest,
+			specialRequests: specialRequest,
 			quotedTotalFee: totalFee,
 			sms: smsForReceiver,
 		};
