@@ -46,7 +46,7 @@ export type lalamove = {
 	apiKey: string;
 	apiSecret: string;
 	country: Country;
-	defaultTimeout: 5000;
+	defaultTimeout?: number;
 };
 
 export type ApiInfo = {
