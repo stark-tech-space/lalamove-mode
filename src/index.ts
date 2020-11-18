@@ -46,6 +46,7 @@ export type lalamove = {
 	apiKey: string;
 	apiSecret: string;
 	country: Country;
+	defaultTimeout?: number;
 };
 
 export type ApiInfo = {
@@ -183,16 +184,23 @@ const UTC_ZERO_TIMEZONE = 'Europe/London';
 export class Lalamove {
 	private apiInfo: ApiInfo; // all property related to lalamove API
 	private baseUrl: string;
-	private static DEFAULT_TIMEOUT = 3000;
+	private defaultTimeout: number;
 
 	// Lalamove class constructor
-	constructor({ baseUrl, apiKey, apiSecret, country }: lalamove) {
+	constructor({
+		baseUrl,
+		apiKey,
+		apiSecret,
+		country,
+		defaultTimeout = 10000,
+	}: lalamove) {
 		this.apiInfo = {
 			country,
 			apiKey,
 			apiSecret,
 		};
 		this.baseUrl = baseUrl;
+		this.defaultTimeout = defaultTimeout;
 	}
 
 	// create signature for lalamove access token
@@ -231,7 +239,7 @@ export class Lalamove {
 			method: method,
 			data: JSON.stringify(body),
 			headers: headers(),
-			timeout: Lalamove.DEFAULT_TIMEOUT,
+			timeout: this.defaultTimeout,
 		});
 
 		// transform result from raw body string to JSON object
