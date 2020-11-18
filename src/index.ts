@@ -192,7 +192,7 @@ export class Lalamove {
 		apiKey,
 		apiSecret,
 		country,
-		defaultTimeout,
+		defaultTimeout = 10000,
 	}: lalamove) {
 		this.apiInfo = {
 			country,
@@ -200,7 +200,7 @@ export class Lalamove {
 			apiSecret,
 		};
 		this.baseUrl = baseUrl;
-		this.defaultTimeout = defaultTimeout || 10000;
+		this.defaultTimeout = defaultTimeout;
 	}
 
 	// create signature for lalamove access token
