@@ -184,7 +184,7 @@ const UTC_ZERO_TIMEZONE = 'Europe/London';
 export class Lalamove {
 	private apiInfo: ApiInfo; // all property related to lalamove API
 	private baseUrl: string;
-	private defaultTimeout: number = 5000;
+	private defaultTimeout: number;
 
 	// Lalamove class constructor
 	constructor({
@@ -200,7 +200,7 @@ export class Lalamove {
 			apiSecret,
 		};
 		this.baseUrl = baseUrl;
-		this.defaultTimeout = defaultTimeout || 5000;
+		this.defaultTimeout = defaultTimeout || 10000;
 	}
 
 	// create signature for lalamove access token
