@@ -183,7 +183,7 @@ const UTC_ZERO_TIMEZONE = 'Europe/London';
 export class Lalamove {
 	private apiInfo: ApiInfo; // all property related to lalamove API
 	private baseUrl: string;
-	private static DEFAULT_TIMEOUT = 3000;
+	private static DEFAULT_TIMEOUT = 5000;
 
 	// Lalamove class constructor
 	constructor({ baseUrl, apiKey, apiSecret, country }: lalamove) {
