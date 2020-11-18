@@ -310,7 +310,6 @@ export class Lalamove {
 		specialRequest,
 	}: quoteRequest): Promise<quoteResponse> {
 		// create request body
-
 		const requestBody = {
 			serviceType,
 			stops: destinations.map(this.stopTransform.bind(this)),
@@ -327,7 +326,7 @@ export class Lalamove {
 			}),
 			requesterContact: sender,
 			scheduleAt: this.dateStringProcess(scheduleAt),
-			specialRequest,
+			specialRequests: specialRequest,
 		};
 
 		return this.request({
