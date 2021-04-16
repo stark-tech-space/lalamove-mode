@@ -1,6 +1,6 @@
 {
   "name": "@stark-tech-space/lalamove-node",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lalamove Api node implementation",
   "main": "lib/index.js",
   "scripts": {
