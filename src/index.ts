@@ -2,7 +2,7 @@ import getTime from 'date-fns/fp/getTime';
 import format from 'date-fns-tz/format';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
-import phin from 'phin';
+import fetch from 'node-fetch';
 
 export enum Country {
 	TW = 'TW',
@@ -211,13 +211,12 @@ export class Lalamove {
 	// do request with lalamove api
 	private async request({ url, method, body = {} }: requestInfo): Promise<any> {
 		const { country, apiKey, apiSecret } = this.apiInfo;
+		const bodyStr = method == HttpMethod.GET ? '' : JSON.stringify(body);
 
 		const tokenGenerate = () => {
 			const timestamp = getTime(new Date());
 			// get signature from api config and request information
-			const rawForSignature = `${timestamp}\r\n${method}\r\n${url}\r\n\r\n${JSON.stringify(
-				body
-			)}`;
+			const rawForSignature = `${timestamp}\r\n${method}\r\n${url}\r\n\r\n${bodyStr}`;
 			const signature = this.createSignature(rawForSignature, apiSecret);
 			const token = `${apiKey}:${timestamp}:${signature}`;
 			return token;
@@ -232,35 +231,33 @@ export class Lalamove {
 				'Content-Type': 'application/json',
 			};
 		};
-
 		// call lalamove and handle errors while response has error(s)
-		const fetchResult: phin.IResponse = await phin({
-			url: `${this.baseUrl}${url}`,
+		const fetchResult: any = await fetch(`${this.baseUrl}${url}`, {
 			method: method,
-			data: JSON.stringify(body),
+			body: method !== HttpMethod.GET ? JSON.stringify(body) : undefined,
 			headers: headers(),
 			timeout: this.defaultTimeout,
 		});
 
-		// transform result from raw body string to JSON object
-		let response: object;
-		try {
-			response = JSON.parse(fetchResult.body);
-		} catch (error) {
-			console.log('json transform error: ', error);
-			response = {};
-		}
-
-		if (!fetchResult.statusCode) {
+		if (!fetchResult.status) {
 			// no response => unexpected error
 			throw new LalamoveException(-1, {
 				message: 'Unexpected Error',
 			});
-		} else if (fetchResult.statusCode < 200 || fetchResult.statusCode >= 400) {
+		} else if (fetchResult.status < 200 || fetchResult.status >= 400) {
 			// http status code for error
-			throw new LalamoveException(fetchResult.statusCode, response);
+			throw new LalamoveException(fetchResult.status, {
+				message: fetchResult.statusText,
+			});
 		}
 
+		// transform result from raw body string to JSON object
+		let response = {};
+		try {
+			response = fetchResult.json();
+		} catch (error) {
+			console.log('json transform error: ', error);
+		}
 		return response;
 	}
 
