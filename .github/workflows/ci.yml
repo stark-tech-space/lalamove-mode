@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    environment: development
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,3 +24,7 @@ jobs:
         run: npm install
       - name: Run Tests
         run: npm test
+        env:
+          LALAMOVE_BASE_URL: ${{ secrets.LALAMOVE_BASE_URL }}
+          LALAMOVE_API_KEY: ${{ secrets.LALAMOVE_API_KEY }}
+          LALAMOVE_API_SECRET: ${{ secrets.LALAMOVE_API_SECRET }}
