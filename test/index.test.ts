@@ -1,7 +1,5 @@
 import * as dotenv from 'dotenv';
-dotenv.config({
-	path: `${__dirname}/.env`,
-});
+dotenv.config();
 
 import { Country, ServiceTypeTW, Lalamove, SpecialRequestTW } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
