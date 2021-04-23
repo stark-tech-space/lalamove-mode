@@ -1,10 +1,15 @@
+import * as dotenv from 'dotenv';
+dotenv.config({
+	path: `${__dirname}/.env`,
+});
+
 import { Country, ServiceTypeTW, Lalamove, SpecialRequestTW } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
 
 const lalamove = new Lalamove({
-	baseUrl: 'https://sandbox-rest.lalamove.com',
-	apiKey: 'c261c1d23a3749ca9111699b55c6139b',
-	apiSecret: 'MCwCAQACBQDqKHyrAgMBAAECBQDpfV3BAgMA96UCAwDyDwICE+UCAgqTAgIA',
+	baseUrl: process.env.LALAMOVE_BASE_URL || '',
+	apiKey: process.env.LALAMOVE_API_KEY || '',
+	apiSecret: process.env.LALAMOVE_API_SECRET || '',
 	country: Country.TW,
 });
 
