@@ -175,7 +175,11 @@ export const specialRequest: {
 
 export class LalamoveException extends Error {
 	constructor(status: number, data: object) {
-		super(`http status: ${status}, data: ${JSON.stringify(data)}`);
+		const json = {
+			status,
+			...data,
+		};
+		super(JSON.stringify(json));
 	}
 }
 
