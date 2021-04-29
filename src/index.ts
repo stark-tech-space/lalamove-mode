@@ -175,10 +175,14 @@ export const specialRequest: {
 
 export class LalamoveException extends Error {
 	constructor(status: number, data: object) {
-		const json = {
-			status,
-			...data,
-		};
+		const json = data
+			? {
+					status,
+					...data,
+			  }
+			: {
+					status,
+			  };
 		super(JSON.stringify(json));
 	}
 }
@@ -236,13 +240,19 @@ export class Lalamove {
 			};
 		};
 		// call lalamove and handle errors while response has error(s)
-		const fetchResult: any = await fetch(`${this.baseUrl}${url}`, {
+		const fetchResult = await fetch(`${this.baseUrl}${url}`, {
 			method: method,
 			body: method !== HttpMethod.GET ? JSON.stringify(body) : undefined,
 			headers: headers(),
 			timeout: this.defaultTimeout,
 		});
 
+		let responseData: any;
+		try {
+			responseData = await fetchResult.json();
+		} catch (error) {
+			responseData = null;
+		}
 		if (!fetchResult.status) {
 			// no response => unexpected error
 			throw new LalamoveException(-1, {
@@ -250,19 +260,18 @@ export class Lalamove {
 			});
 		} else if (fetchResult.status < 200 || fetchResult.status >= 400) {
 			// http status code for error
-			throw new LalamoveException(fetchResult.status, {
-				message: fetchResult.statusText,
-			});
+
+			throw new LalamoveException(
+				fetchResult.status,
+				responseData
+					? {
+							message: responseData?.message,
+					  }
+					: {}
+			);
 		}
 
-		// transform result from raw body string to JSON object
-		let response = {};
-		try {
-			response = fetchResult.json();
-		} catch (error) {
-			console.log('json transform error: ', error);
-		}
-		return response;
+		return responseData || {};
 	}
 
 	private dateStringProcess(date: Date) {
