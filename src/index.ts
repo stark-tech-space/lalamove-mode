@@ -175,7 +175,6 @@ export const specialRequest: {
 
 export class LalamoveException extends Error {
 	constructor(status: number, data: object) {
-		console.log(data);
 		const json = data
 			? {
 					status,
@@ -272,14 +271,7 @@ export class Lalamove {
 			);
 		}
 
-		// transform result from raw body string to JSON object
-		let response = {};
-		try {
-			response = responseData;
-		} catch (error) {
-			console.log('json transform error: ', error);
-		}
-		return response;
+		return responseData || {};
 	}
 
 	private dateStringProcess(date: Date) {
