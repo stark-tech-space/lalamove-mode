@@ -6,6 +6,9 @@ import fetch from 'node-fetch';
 
 export enum Country {
 	TW = 'TW',
+	TW_TPE = 'TW_TPE',
+	TW_TXG = 'TW_TXG',
+	TW_KHH = 'TW_KHH',
 }
 
 export enum LanguagesTW {
@@ -57,6 +60,9 @@ export type ApiInfo = {
 
 export type Languages = {
 	TW: LanguagesTW;
+	TW_TPE: LanguagesTW;
+	TW_TXG: LanguagesTW;
+	TW_KHH: LanguagesTW;
 };
 
 export type requestInfo = {
@@ -67,6 +73,9 @@ export type requestInfo = {
 
 export type ServiceType = {
 	TW: ServiceTypeTW;
+	TW_TPE: ServiceTypeTW;
+	TW_TXG: ServiceTypeTW;
+	TW_KHH: ServiceTypeTW;
 };
 
 export type Location = {
@@ -97,6 +106,9 @@ export type DeliveryInfo = {
 
 export type SpecialRequest = {
 	TW: SpecialRequestTW[];
+	TW_TPE: SpecialRequestTW[];
+	TW_TXG: SpecialRequestTW[];
+	TW_KHH: SpecialRequestTW[];
 };
 
 export type quoteRequest = {
@@ -154,8 +166,32 @@ export type cancelOrderResponse = object;
 
 export const serviceType: {
 	TW: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
+	TW_TPE: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
+	TW_TXG: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
+	TW_KHH: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
 } = {
 	TW: {
+		MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
+		MPV: ServiceTypeTW.MPV,
+		VAN: ServiceTypeTW.VAN,
+		TRUCK175: ServiceTypeTW.TRUCK175,
+		TRUCK330: ServiceTypeTW.TRUCK330,
+	},
+	TW_TPE: {
+		MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
+		MPV: ServiceTypeTW.MPV,
+		VAN: ServiceTypeTW.VAN,
+		TRUCK175: ServiceTypeTW.TRUCK175,
+		TRUCK330: ServiceTypeTW.TRUCK330,
+	},
+	TW_TXG: {
+		MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
+		MPV: ServiceTypeTW.MPV,
+		VAN: ServiceTypeTW.VAN,
+		TRUCK175: ServiceTypeTW.TRUCK175,
+		TRUCK330: ServiceTypeTW.TRUCK330,
+	},
+	TW_KHH: {
 		MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
 		MPV: ServiceTypeTW.MPV,
 		VAN: ServiceTypeTW.VAN,
@@ -166,8 +202,23 @@ export const serviceType: {
 
 export const specialRequest: {
 	TW: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
+	TW_TPE: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
+	TW_TXG: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
+	TW_KHH: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
 } = {
 	TW: {
+		HELP_BUY: SpecialRequestTW.HELP_BUY,
+		LALABAG: SpecialRequestTW.LALABAG,
+	},
+	TW_TPE: {
+		HELP_BUY: SpecialRequestTW.HELP_BUY,
+		LALABAG: SpecialRequestTW.LALABAG,
+	},
+	TW_TXG: {
+		HELP_BUY: SpecialRequestTW.HELP_BUY,
+		LALABAG: SpecialRequestTW.LALABAG,
+	},
+	TW_KHH: {
 		HELP_BUY: SpecialRequestTW.HELP_BUY,
 		LALABAG: SpecialRequestTW.LALABAG,
 	},
