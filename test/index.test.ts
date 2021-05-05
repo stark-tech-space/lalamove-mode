@@ -8,7 +8,7 @@ const lalamove = new Lalamove({
 	baseUrl: 'https://sandbox-rest.lalamove.com',
 	apiKey: process.env.LALAMOVE_API_KEY || '',
 	apiSecret: process.env.LALAMOVE_API_SECRET || '',
-	country: Country.TW,
+	country: Country.TW_TPE,
 });
 
 describe('Lalamove Integration Test', () => {
