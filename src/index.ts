@@ -2,7 +2,7 @@ import getTime from 'date-fns/fp/getTime';
 import format from 'date-fns-tz/format';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
-import fetch from 'node-fetch';
+import * as superagent from 'superagent';
 
 export enum Country {
 	TW = 'TW',
@@ -230,46 +230,56 @@ export class Lalamove {
 			return token;
 		};
 
-		// use request mapping callback function object to replace if...else... statement
-		const headers = () => {
-			return {
-				Authorization: `hmac ${tokenGenerate()}`,
-				'X-LLM-Country': country,
-				'X-Request-ID': uuidv4(),
-				'Content-Type': 'application/json',
-			};
-		};
 		// call lalamove and handle errors while response has error(s)
-		const fetchResult = await fetch(`${this.baseUrl}${url}`, {
-			method: method,
-			body: method !== HttpMethod.GET ? JSON.stringify(body) : undefined,
-			headers: headers(),
-			timeout: this.defaultTimeout,
-		});
-
-		let responseData: any;
+		let fetchResult: superagent.Response;
 		try {
-			responseData = await fetchResult.json();
+			switch (method) {
+				case HttpMethod.GET:
+					fetchResult = await superagent
+						.get(`${this.baseUrl}${url}`)
+						.set('Authorization', `hmac ${tokenGenerate()}`)
+						.set('X-LLM-Country', country)
+						.set('X-Request-ID', uuidv4())
+						.set('Content-Type', 'application/json');
+					break;
+				case HttpMethod.POST:
+					fetchResult = await superagent
+						.post(`${this.baseUrl}${url}`)
+						.send(body)
+						.set('Authorization', `hmac ${tokenGenerate()}`)
+						.set('X-LLM-Country', country)
+						.set('X-Request-ID', uuidv4())
+						.set('Content-Type', 'application/json');
+					break;
+				case HttpMethod.PUT:
+					fetchResult = await superagent
+						.put(`${this.baseUrl}${url}`)
+						.send(body)
+						.set('Authorization', `hmac ${tokenGenerate()}`)
+						.set('X-LLM-Country', country)
+						.set('X-Request-ID', uuidv4())
+						.set('Content-Type', 'application/json');
+					break;
+			}
 		} catch (error) {
-			responseData = null;
-		}
-		if (!fetchResult.status) {
-			// no response => unexpected error
-			throw new LalamoveException(-1, {
-				message: 'Unexpected Error',
-			});
-		} else if (fetchResult.status < 200 || fetchResult.status >= 400) {
-			// http status code for error
-
-			throw new LalamoveException(
-				fetchResult.status,
-				responseData
-					? {
-							message: responseData?.message,
-					  }
-					: {}
+			const status = error.status;
+			const response: superagent.Response = error.response;
+			throw new Error(
+				JSON.stringify({
+					status,
+					description: response.text,
+					body: response.body,
+				})
 			);
 		}
+		// const fetchResult = await fetch(`${this.baseUrl}${url}`, {
+		// 	method: method,
+		// 	body: method !== HttpMethod.GET ? JSON.stringify(body) : undefined,
+		// 	headers: headers(),
+		// 	timeout: this.defaultTimeout,
+		// });
+
+		const responseData = fetchResult.body;
 
 		return responseData || {};
 	}

@@ -60,7 +60,7 @@ describe('Lalamove Integration Test', () => {
 				name: 'Test Sender',
 				phone: '0955940336',
 			},
-			scheduleAt: orderTime,
+			scheduleAt: null,
 			specialRequest: [SpecialRequestTW.HELP_BUY],
 		});
 
