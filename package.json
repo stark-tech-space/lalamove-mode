@@ -1,46 +1,45 @@
 {
-	"name": "@stark-tech-space/lalamove-node",
-	"version": "0.4.0",
-	"description": "Lalamove Api node implementation",
-	"main": "lib/index.js",
-	"scripts": {
-		"test": "jest --config jestconfig.json",
-		"build": "tsc",
-		"prepublishOnly": "npm run build"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/stark-tech-space/lalamove-node.git"
-	},
-	"publishConfig": {
-		"registry": "https://npm.pkg.github.com/@stark-tech-space"
-	},
-	"keywords": [
-		"lalamove"
-	],
-	"author": "Stark Tech",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/stark-tech-space/lalamove-node/issues"
-	},
-	"homepage": "https://github.com/stark-tech-space/lalamove-node#readme",
-	"devDependencies": {
-		"@types/jest": "^26.0.14",
-		"dotenv": "^8.2.0",
-		"jest": "^26.5.0",
-		"ts-jest": "^26.4.1",
-		"typescript": "^4.0.3"
-	},
-	"dependencies": {
-		"@types/crypto-js": "^4.0.1",
-		"@types/node": "^14.11.5",
-		"@types/superagent": "^4.1.11",
-		"@types/uuid": "^8.3.0",
-		"crypto-js": "^4.0.0",
-		"date-fns": "^2.16.1",
-		"date-fns-tz": "^1.0.12",
-		"lodash": "^4.17.20",
-		"superagent": "^6.1.0",
-		"uuid": "^8.3.1"
-	}
+  "name": "@stark-tech-space/lalamove-node",
+  "version": "0.4.0",
+  "description": "Lalamove Api node implementation",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stark-tech-space/lalamove-node.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@stark-tech-space"
+  },
+  "keywords": [
+    "lalamove"
+  ],
+  "author": "Stark Tech",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stark-tech-space/lalamove-node/issues"
+  },
+  "homepage": "https://github.com/stark-tech-space/lalamove-node#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "dotenv": "^8.2.0",
+    "jest": "^26.5.0",
+    "ts-jest": "^26.4.1",
+    "typescript": "^4.0.3",
+    "@types/crypto-js": "^4.0.1",
+    "@types/node": "^14.11.5",
+    "@types/superagent": "^4.1.11",
+    "@types/uuid": "^8.3.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "date-fns": "^2.16.1",
+    "date-fns-tz": "^1.0.12",
+    "superagent": "^6.1.0",
+    "uuid": "^8.3.1"
+  }
 }

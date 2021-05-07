@@ -1,4 +1,4 @@
-import getTime from 'date-fns/fp/getTime';
+import getTime from 'date-fns/getTime';
 import format from 'date-fns-tz/format';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
