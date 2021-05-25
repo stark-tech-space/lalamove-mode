@@ -159,6 +159,8 @@ export type driverLocationResponse = {
 
 export type cancelOrderResponse = object;
 
+export type addPriorityFeeResponse = object;
+
 export const serviceType: {
   TW_TPE: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
   TW_TXG: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
@@ -440,7 +442,7 @@ export class Lalamove {
     });
   }
 
-  async addPriorityFee(orderId: string, tips: number) {
+  async addPriorityFee(orderId: string, tips: number): Promise<addPriorityFeeResponse> {
     const requestBody = { tips: tips.toString() };
     return this.request({
       url: `/v2/orders/${orderId}/tips`,
