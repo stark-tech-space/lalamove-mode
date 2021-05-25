@@ -132,6 +132,7 @@ describe('Lalamove Integration Test', () => {
     expect(addTips).toBeDefined();
     expect(Object.keys(addTips).length).toBe(0);
 
+    console.log('Order Detail');
     const orderDetail = await lalamove.orderDetail(order.orderRef);
 
     expect(orderDetail).toBeDefined();
