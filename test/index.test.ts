@@ -123,10 +123,15 @@ describe('Lalamove Integration Test', () => {
     });
 
     expect(order).toBeDefined();
-    expect(order).toHaveProperty('customerOrderId');
+    //expect(order).toHaveProperty('customerOrderId'); //deprecated in sandbox environment.
     expect(order).toHaveProperty('orderRef');
 
-    console.log('Order Detail');
+    console.log('Add Tips');
+    const addTips = await lalamove.addPriorityFee(order.orderRef, 20);
+
+    expect(addTips).toBeDefined();
+    expect(Object.keys(addTips).length).toBe(0);
+
     const orderDetail = await lalamove.orderDetail(order.orderRef);
 
     expect(orderDetail).toBeDefined();

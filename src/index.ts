@@ -296,13 +296,6 @@ export class Lalamove {
         }),
       );
     }
-    // const fetchResult = await fetch(`${this.baseUrl}${url}`, {
-    // 	method: method,
-    // 	body: method !== HttpMethod.GET ? JSON.stringify(body) : undefined,
-    // 	headers: headers(),
-    // 	timeout: this.defaultTimeout,
-    // });
-
     const responseData = fetchResult.body;
 
     return responseData || {};
@@ -444,6 +437,15 @@ export class Lalamove {
     return this.request({
       url: `/v2/orders/${orderId}/cancel`,
       method: HttpMethod.PUT,
+    });
+  }
+
+  async addPriorityFee(orderId: string, tips: number) {
+    const requestBody = { tips: tips.toString() };
+    return this.request({
+      url: `/v2/orders/${orderId}/tips`,
+      method: HttpMethod.PUT,
+      body: requestBody,
     });
   }
 }
