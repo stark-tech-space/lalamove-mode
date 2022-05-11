@@ -6,11 +6,11 @@ import {
   Lalamove,
   LanguagesTW,
   Market,
-  orderDetailResponse,
-  orderPlacementResponse,
-  quoteResponse,
+  OrderDetailResponse,
+  OrderPlacementResponse,
+  QuoteResponse,
   Reason,
-  serviceType,
+  serviceTypeMap,
   specialRequestMap,
   Weight,
 } from "../src";
@@ -25,14 +25,14 @@ const lalamove = new Lalamove({
     "sk_test_OSnKYxn/uBbVf3UHYev8V+PsVXrsYPx6c7efJwYGzwL1OQn+IjdB0d2TXxz0yiYm",
   market: Market.TAIWAN,
 });
-let quotation: quoteResponse;
-let order: orderPlacementResponse;
+let quotation: QuoteResponse;
+let order: OrderPlacementResponse;
 describe("Lalamove Integration Test", () => {
   it("Get Quote", async () => {
     const orderTime = addMinutes(15, new Date());
 
     quotation = await lalamove.getQuote({
-      serviceType: serviceType.TW_TPE.MOTORCYCLE,
+      serviceType: serviceTypeMap.TW.MOTORCYCLE,
       specialRequests: [specialRequestMap[Market.TAIWAN].ENGLISH],
       language: LanguagesTW.zh_TW,
       stops: [
@@ -127,7 +127,7 @@ console.log(
 // 在運行下列測試之前，請先到https://partnerportal.lalamove.com/records 接單，不過取消司機需要接單超過15分鐘才可取消。
 
 describe("try to change driver and cancel order", () => {
-  let orderDetail: orderDetailResponse;
+  let orderDetail: OrderDetailResponse;
   it("order detail", async () => {
     await delay(15000);
     orderDetail = await lalamove.orderDetail(order.orderId);

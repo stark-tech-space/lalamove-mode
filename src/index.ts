@@ -10,7 +10,6 @@ export enum Country {
   TW_KHH = "TW_KHH",
 }
 
-// TODO: 現在不需指名國家跟城市，只要放market
 export enum Market {
   TAIWAN = "TW",
   BRASIL = "BR",
@@ -135,17 +134,28 @@ export type Languages = {
   [Market.PHILIPPINES]: LanguagesPH;
 };
 
-export type requestInfo = {
+export type RequestInfo = {
   url: string;
   method: HttpMethod;
   body?: object;
 };
 
-export type ServiceType = {
-  TW_TPE: ServiceTypeTW;
-  TW_TXG: ServiceTypeTW;
-  TW_KHH: ServiceTypeTW;
+// TODO: other market serviceType
+export const serviceTypeMap = {
+  [Market.TAIWAN]: ServiceTypeTW,
+  [Market.BRASIL]: ServiceTypeTW,
+  [Market.Hong_Kong]: ServiceTypeTW,
+  [Market.INDONESIA]: ServiceTypeTW,
+  [Market.MALAYSIA]: ServiceTypeTW,
+  [Market.MEXICO]: ServiceTypeTW,
+  [Market.PHILIPPINES]: ServiceTypeTW,
+  [Market.SINGAPORE]: ServiceTypeTW,
+  [Market.THAILAND]: ServiceTypeTW,
+  [Market.VIETNAM]: ServiceTypeTW,
 };
+
+// TODO:  & other market serviceType
+export type ServiceType = ServiceTypeTW;
 
 export type Location = {
   lat: number;
@@ -205,8 +215,8 @@ export type CashOnDelivery = {
   amount: string;
 };
 
-export type quoteRequest = {
-  serviceType: ServiceType[Country];
+export type QuoteRequest = {
+  serviceType: ServiceType;
   language: Languages[Market];
   stops: Array<Omit<DeliveryStop, "stopId">>;
   scheduleAt?: Date; // UTC ISO8601 format
@@ -242,7 +252,7 @@ export type DeliveryDetails = {
   remark?: string;
 };
 
-export type orderPlacementRequest = {
+export type OrderPlacementRequest = {
   quotationId: string;
   sender: Contact & {
     stopId?: string;
@@ -254,18 +264,18 @@ export type orderPlacementRequest = {
   metadata?: Record<string, any>;
 };
 
-export type quoteResponse = {
+export type QuoteResponse = {
   quotationId: string;
   scheduleAt: string;
   serviceType: ServiceTypeTW;
   specialRequests?: Array<SpecialRequest[Market]>;
   expiresAt: string; // 5 mins
-  priceBreakdown: priceBreakdown;
+  priceBreakdown: PriceBreakdown;
   stops: Array<Stop>;
   item?: Item;
 };
 
-export type priceBreakdown = {
+export type PriceBreakdown = {
   base: string;
   extraMileage: string;
   surcharge: string;
@@ -293,10 +303,10 @@ export type Stop = DeliveryStop & {
   };
 };
 
-export type orderPlacementResponse = {
+export type OrderPlacementResponse = {
   orderId: string;
   quotationId: string;
-  priceBreakdown: priceBreakdown;
+  priceBreakdown: PriceBreakdown;
   priorityFee?: string;
   driverId: string;
   shareLink: string;
@@ -307,10 +317,10 @@ export type orderPlacementResponse = {
   cashOnDelivery: CashOnDelivery;
 };
 
-export type orderDetailResponse = {
+export type OrderDetailResponse = {
   orderId: string;
   quotationId: string;
-  priceBreakdown: priceBreakdown;
+  priceBreakdown: PriceBreakdown;
   priorityFee: string;
   status: LalamoveOrderStatus;
   cashOnDelivery: CashOnDelivery;
@@ -321,7 +331,7 @@ export type orderDetailResponse = {
   metadata: Record<string, any>;
 };
 
-export type driverDetailResponse = {
+export type DriverDetailResponse = {
   driverId: string;
   name: string;
   phone: string;
@@ -333,7 +343,7 @@ export type driverDetailResponse = {
   };
 };
 
-export type driverLocationResponse = {
+export type DriverLocationResponse = {
   location: {
     lat: string;
     lng: string;
@@ -341,42 +351,17 @@ export type driverLocationResponse = {
   updatedAt: string;
 };
 
-export type cancelOrderResponse = object;
+export type CancelOrderResponse = object;
 
-export type addPriorityFeeResponse = {
+export type AddPriorityFeeResponse = {
   orderId: string;
   quotationId: string;
-  priceBreakdown: priceBreakdown;
+  priceBreakdown: PriceBreakdown;
   shareLink: string;
   driverId: string;
   status: LalamoveOrderStatus;
   distance: Distance;
   stops: Array<Stop>;
-};
-
-export const serviceType: {
-  TW_TPE: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-  TW_TXG: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-  TW_KHH: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-} = {
-  TW_TPE: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
-  TW_TXG: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
-  TW_KHH: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
 };
 
 // TODO: add other market SpecialRequests
@@ -437,7 +422,7 @@ export class Lalamove {
   }
 
   // do request with lalamove api
-  private async request({ url, method, body = {} }: requestInfo): Promise<any> {
+  private async request({ url, method, body = {} }: RequestInfo): Promise<any> {
     const { market, apiKey, apiSecret } = this.apiInfo;
     const bodyStr = method == HttpMethod.GET ? "" : JSON.stringify(body);
 
@@ -536,9 +521,9 @@ export class Lalamove {
     isRouteOptimized,
     item,
     cashOnDelivery,
-  }: quoteRequest): Promise<quoteResponse> {
+  }: QuoteRequest): Promise<QuoteResponse> {
     // create request body
-    const requestBody: Omit<quoteRequest, "scheduleAt"> & {
+    const requestBody: Omit<QuoteRequest, "scheduleAt"> & {
       scheduleAt?: string;
     } = {
       serviceType,
@@ -566,7 +551,7 @@ export class Lalamove {
     isPODEnabled,
     partner,
     metadata,
-  }: orderPlacementRequest): Promise<orderPlacementResponse> {
+  }: OrderPlacementRequest): Promise<OrderPlacementResponse> {
     // create request body
     const requestBody = {
       quotationId,
@@ -585,7 +570,7 @@ export class Lalamove {
     });
   }
 
-  async orderDetail(orderId: string): Promise<orderDetailResponse> {
+  async orderDetail(orderId: string): Promise<OrderDetailResponse> {
     return this.request({
       url: `/v3/orders/${orderId}`,
       method: HttpMethod.GET,
@@ -599,14 +584,14 @@ export class Lalamove {
   async driverDetail(
     orderId: string,
     driverId: string
-  ): Promise<driverDetailResponse> {
+  ): Promise<DriverDetailResponse> {
     return this.request({
       url: `/v3/orders/${orderId}/drivers/${driverId}`,
       method: HttpMethod.GET,
     });
   }
 
-  async cancelOrder(orderId: string): Promise<cancelOrderResponse> {
+  async cancelOrder(orderId: string): Promise<CancelOrderResponse> {
     return this.request({
       url: `/v3/orders/${orderId}`,
       method: HttpMethod.DELETE,
@@ -637,7 +622,7 @@ export class Lalamove {
   async addPriorityFee(
     orderId: string,
     tips: number
-  ): Promise<addPriorityFeeResponse> {
+  ): Promise<AddPriorityFeeResponse> {
     const requestBody = { priorityFee: tips.toString() };
     return this.request({
       url: `/v3/orders/${orderId}/priority-fee`,
