@@ -24,8 +24,8 @@ const lalamove = new Lalamove({
   apiSecret: process.env.LALAMOVE_API_SECRET || "",
   market: Market.TAIWAN,
 });
-let quotation: QuoteResponse;
-let order: OrderPlacementResponse;
+let quotation: QuoteResponse | null = null;
+let order: OrderPlacementResponse | null = null;
 describe("Lalamove Integration Test", () => {
   it("Get Quote", async () => {
     const orderTime = addMinutes(15, new Date());
@@ -74,15 +74,15 @@ describe("Lalamove Integration Test", () => {
 
   it("Place Order", async () => {
     order = await lalamove.placeOrder({
-      quotationId: quotation.quotationId,
+      quotationId: quotation!.quotationId,
       sender: {
-        stopId: quotation?.stops[1].stopId || "",
+        stopId: quotation!.stops[1].stopId || "",
         name: "Weserve Test Store",
         phone: "+886912345678",
       },
       recipients: [
         {
-          stopId: quotation?.stops[0].stopId || "",
+          stopId: quotation!.stops[0].stopId || "",
           name: "Weserve Test Customer",
           phone: "+886912345123",
         },
@@ -107,7 +107,7 @@ describe("Lalamove Integration Test", () => {
   });
 
   it("Add tips", async () => {
-    const addTips = await lalamove.addPriorityFee(order.orderId, 30);
+    const addTips = await lalamove.addPriorityFee(order!.orderId, 30);
 
     expect(addTips).toBeDefined();
     expect(addTips).toHaveProperty("orderId");
@@ -126,10 +126,10 @@ console.log(
 // 在運行下列測試之前，請先到https://partnerportal.lalamove.com/records 接單，不過取消司機需要接單超過15分鐘才可取消。
 
 describe("try to change driver and cancel order", () => {
-  let orderDetail: OrderDetailResponse;
+  let orderDetail: OrderDetailResponse | null = null;
   it("order detail", async () => {
-    await delay(15000);
-    orderDetail = await lalamove.orderDetail(order.orderId);
+    // await delay(15000);
+    orderDetail = await lalamove.orderDetail(order!.orderId);
 
     expect(orderDetail).toBeDefined();
     expect(orderDetail).toHaveProperty("orderId");
@@ -161,7 +161,7 @@ describe("try to change driver and cancel order", () => {
   // });
 
   it("cancel order", async () => {
-    const orderCancel = await lalamove.cancelOrder(order.orderId);
+    const orderCancel = await lalamove.cancelOrder(order!.orderId);
     expect(orderCancel).toBeDefined();
   });
 });
