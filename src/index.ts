@@ -191,10 +191,11 @@ export type QuoteRequest = {
   language: Languages[Market];
   stops: Array<DeliveryStop>;
   scheduleAt?: Date; // UTC ISO8601 format
-  specialRequests?: Array<typeof specialRequestMap[City][ServiceType]>;
+  specialRequests?: Array<specialRequests>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
+  city: City;
 };
 
 export enum Weight {
@@ -240,7 +241,7 @@ export type QuoteResponse = {
   quotationId: string;
   scheduleAt: string;
   serviceType: ServiceTypeTW;
-  specialRequests?: Array<typeof specialRequestMap[City][ServiceType]>;
+  specialRequests?: Array<specialRequests>;
   expiresAt: string; // 5 mins
   priceBreakdown: PriceBreakdown;
   stops: Array<Stop>;
@@ -336,113 +337,219 @@ export type AddPriorityFeeResponse = {
   stops: Array<Stop>;
 };
 
-export const specialRequestMap = {
-  [City.TW_TPE]: {
-    [serviceTypeMap.TW.MOTORCYCLE]: {
-      Lalabag: "THERMAL_BAG_1",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      FragileGoods: "FRAGILE_GOODS",
-      ChildPurchaseService1: "PURCHASE_SERVICE_2",
-      ChildPurchaseService2: "PURCHASE_SERVICE_3",
-      ENGLISH: "ENGLISH",
-      ChildSingleSelect1: "TOLL_FEE_1",
-      ChildSingleSelect2: "TOLL_FEE_2",
-      ChildSingleSelect3: "TOLL_FEE_3",
-    },
-    [serviceTypeMap.TW.MPV]: {
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      RequireLift: "MOVING_SERVICE",
-      LalabagSUV: "THERMAL_BAG_1",
-      ChildMultiSelect1: "TOLL_FEE_1",
-      ChildMultiSelect2: "TOLL_FEE_2",
-      ChildMultiSelect3: "TOLL_FEE_3",
-      ChildMultiSelect4: "TOLL_FEE_4",
-      ChildMultiSelect5: "TOLL_FEE_5",
-      ChildMultiSelect6: "TOLL_FEE_6",
-      ChildMultiSelect7: "TOLL_FEE_7",
-      ChildMultiSelect8: "TOLL_FEE_8",
-      ChildMultiSelect9: "TOLL_FEE_9",
-      ChildMultiSelect10: "TOLL_FEE_10",
-    },
-    [serviceTypeMap.TW.VAN]: {
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-      thermalBag: "THERMAL_BAG_1",
-      PETS: "PETS",
-      ChildMultiSelect1: "TOLL_FEE_1",
-      ChildMultiSelect2: "TOLL_FEE_2",
-      ChildMultiSelect3: "TOLL_FEE_3",
-    },
-    [serviceTypeMap.TW.TRUCK175]: {},
-  },
-  [City.TW_TXG]: {
-    [serviceTypeMap.TW.MOTORCYCLE]: {
-      Lalabag: "THERMAL_BAG_1",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-    },
-    [serviceTypeMap.TW.MPV]: {
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-    },
-    [serviceTypeMap.TW.TRUCK175]: {
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      SelfServedHouseMoving: "MOVING_SERVICE",
-      MovingUpstairsWithElevator: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-      MovingUpstairsWithoutElevator4to6F: "MOVING_SERVICE_3",
-      Tailgate: "TAILBOARD",
-      Refrigerator: "REFRIGERATED_UV_1",
-      Freezer: "REFRIGERATED_UV_2",
-      PortageFee: "MOVING_SERVICE_4",
-      ProfessionalHouseMoving: "MOVING_SERVICE_1",
-      MovingUpstairsWithoutElevatorB1and2to3F: "MOVING_SERVICE_2",
-    },
-    [serviceTypeMap.TW.VAN]: {
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-    },
-  },
-  [City.TW_KHH]: {
-    [serviceTypeMap.TW.MOTORCYCLE]: {
-      HelpBuy: "PURCHASE_SERVICE_1",
-      FragileGoods: "FRAGILE_GOODS",
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      Lalabag: "THERMAL_BAG_1",
-    },
-    [serviceTypeMap.TW.MPV]: {
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      FragileGoods: "FRAGILE_GOODS",
-      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-    },
-    [serviceTypeMap.TW.TRUCK175]: {
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      FragileGoods: "FRAGILE_GOODS",
-      MovingUpstairsWithoutElevatorB1and2to3F: "MOVING_SERVICE_2",
-      RequireLiftWithElevator: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-      Tailgate: "TAILBOARD",
-      Refrigerator: "REFRIGERATED_UV_1",
-      Freezer: "REFRIGERATED_UV_2",
-      PortageFee: "MOVING_SERVICE_4",
-      MovingUpstairsWithoutElevator4to6F: "MOVING_SERVICE_3",
-    },
-    [serviceTypeMap.TW.VAN]: {
-      PaidByRecipient: "CASH_ON_DELIVERY",
-      HelpBuy: "PURCHASE_SERVICE_1",
-      FragileGoods: "FRAGILE_GOODS",
-      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-    },
-  },
+export enum specialRequests {
+  Lalabag = "THERMAL_BAG_1",
+  LalabagSUV = "THERMAL_BAG_1",
+  HelpBuy = "PURCHASE_SERVICE_1",
+  FragileGood = "FRAGILE_GOODS",
+  ChildPurchaseService1 = "PURCHASE_SERVICE_2",
+  ChildPurchaseService2 = "PURCHASE_SERVICE_3",
+  English = "ENGLISH",
+  ChildTollPercentage1 = "TOLL_FEE_1",
+  ChildSingleSelect1 = "TOLL_FEE_1",
+  ChildMultiSelect1 = "TOLL_FEE_1",
+
+  ChildSingleSelect2 = "TOLL_FEE_2",
+  ChildMultiSelect2 = "TOLL_FEE_2",
+  ChildTollPercentage2 = "TOLL_FEE_2",
+
+  ChildTollPercentage3 = "TOLL_FEE_3",
+  ChildMultiSelect3 = "TOLL_FEE_3",
+  ChildSingleSelect3 = "TOLL_FEE_3",
+
+  ChildTollPercentage4 = "TOLL_FEE_4",
+  ChildMultiSelect4 = "TOLL_FEE_4",
+  ChildSingleSelect4 = "TOLL_FEE_4",
+
+  ChildMultiSelect5 = "TOLL_FEE_5",
+  ChildMultiSelect6 = "TOLL_FEE_6",
+  ChildMultiSelect7 = "TOLL_FEE_7",
+  ChildMultiSelect8 = "TOLL_FEE_8",
+  ChildMultiSelect9 = "TOLL_FEE_9",
+  ChildMultiSelect10 = "TOLL_FEE_10",
+  FragileGoods = "FRAGILE_GOODS",
+  PaidByRecipient = "CASH_ON_DELIVERY",
+  RequireLift = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+  thermalBag = "THERMAL_BAG_1",
+  Pets = "PETS",
+  RequireLiftWithElevator = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+  Tailgate = "TAILBOARD",
+  Refrigerator = "REFRIGERATED_UV_1",
+  Freezer = "REFRIGERATED_UV_2",
+  SelfServedHouseMoving = "MOVING_SERVICE",
+  MovingUpstairsWithElevator = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+  ProfessionalHouseMoving = "MOVING_SERVICE_1",
+  MovingUpstairsWithoutElevatorB1and2to3F = "MOVING_SERVICE_2",
+  MovingUpstairsWithoutElevator4to6F = "MOVING_SERVICE_3",
+  PortageFee = "MOVING_SERVICE_4",
+}
+
+const getValidSpecialRequests = ({
+  city,
+  serviceType,
+  specialRequestsFromRequest = [],
+}: {
+  serviceType: ServiceType;
+  city: City;
+  specialRequestsFromRequest: Array<specialRequests>;
+}) => {
+  let validSpecialRequest: Array<specialRequests> = [];
+  switch (city) {
+    case City.TW_TPE: {
+      switch (serviceType) {
+        case ServiceTypeTW.MOTORCYCLE: {
+          validSpecialRequest = [
+            specialRequests.Lalabag,
+            specialRequests.HelpBuy,
+            specialRequests.FragileGood,
+            specialRequests.ChildPurchaseService1,
+            specialRequests.ChildPurchaseService2,
+            specialRequests.English,
+            specialRequests.ChildSingleSelect1,
+            specialRequests.ChildSingleSelect2,
+            specialRequests.ChildSingleSelect3,
+          ];
+          break;
+        }
+        case ServiceTypeTW.MPV: {
+          validSpecialRequest = [
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.HelpBuy,
+            specialRequests.RequireLift,
+            specialRequests.LalabagSUV,
+            specialRequests.ChildMultiSelect1,
+            specialRequests.ChildMultiSelect2,
+            specialRequests.ChildMultiSelect3,
+            specialRequests.ChildMultiSelect4,
+            specialRequests.ChildMultiSelect5,
+            specialRequests.ChildMultiSelect6,
+            specialRequests.ChildMultiSelect7,
+            specialRequests.ChildMultiSelect8,
+            specialRequests.ChildMultiSelect9,
+            specialRequests.ChildMultiSelect10,
+          ];
+          break;
+        }
+        case ServiceTypeTW.VAN: {
+          validSpecialRequest = [
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.HelpBuy,
+            specialRequests.RequireLift,
+            specialRequests.thermalBag,
+            specialRequests.Pets,
+            specialRequests.ChildSingleSelect1,
+            specialRequests.ChildSingleSelect2,
+            specialRequests.ChildSingleSelect3,
+          ];
+          break;
+        }
+        case ServiceTypeTW.TRUCK175: {
+          break;
+        }
+      }
+      break;
+    }
+    case City.TW_TXG: {
+      switch (serviceType) {
+        case serviceTypeMap.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            specialRequests.Lalabag,
+            specialRequests.HelpBuy,
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.MPV: {
+          validSpecialRequest = [
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.HelpBuy,
+            specialRequests.RequireLift,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.VAN: {
+          validSpecialRequest = [
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.HelpBuy,
+            specialRequests.RequireLift,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.TRUCK175: {
+          validSpecialRequest = [
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.SelfServedHouseMoving,
+            specialRequests.MovingUpstairsWithElevator,
+            specialRequests.MovingUpstairsWithoutElevator4to6F,
+            specialRequests.Tailgate,
+            specialRequests.Refrigerator,
+            specialRequests.Freezer,
+            specialRequests.PortageFee,
+            specialRequests.ProfessionalHouseMoving,
+            specialRequests.MovingUpstairsWithoutElevatorB1and2to3F,
+          ];
+          break;
+        }
+      }
+      break;
+    }
+    case City.TW_KHH: {
+      switch (serviceType) {
+        case serviceTypeMap.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            specialRequests.HelpBuy,
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.Lalabag,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.MPV: {
+          validSpecialRequest = [
+            specialRequests.HelpBuy,
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.RequireLift,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.VAN: {
+          validSpecialRequest = [
+            specialRequests.HelpBuy,
+            specialRequests.FragileGood,
+            specialRequests.PaidByRecipient,
+            specialRequests.RequireLift,
+          ];
+          break;
+        }
+        case serviceTypeMap.TW.TRUCK175: {
+          validSpecialRequest = [
+            specialRequests.PaidByRecipient,
+            specialRequests.FragileGood,
+            specialRequests.MovingUpstairsWithoutElevatorB1and2to3F,
+            specialRequests.RequireLiftWithElevator,
+            specialRequests.Tailgate,
+            specialRequests.Refrigerator,
+            specialRequests.Freezer,
+            specialRequests.PortageFee,
+            specialRequests.MovingUpstairsWithoutElevator4to6F,
+          ];
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  return specialRequestsFromRequest.filter((req) =>
+    validSpecialRequest.includes(req)
+  );
 };
 
 export class LalamoveException extends Error {
@@ -590,19 +697,25 @@ export class Lalamove {
     language,
     stops,
     scheduleAt,
-    specialRequests,
+    specialRequests = [],
     isRouteOptimized,
     item,
     cashOnDelivery,
+    city,
   }: QuoteRequest): Promise<QuoteResponse> {
+    const validSpecialRequests = getValidSpecialRequests({
+      city,
+      serviceType,
+      specialRequestsFromRequest: specialRequests,
+    });
     // create request body
-    const requestBody: Omit<QuoteRequest, "scheduleAt"> & {
+    const requestBody: Omit<QuoteRequest, "scheduleAt" | "city"> & {
       scheduleAt?: string;
     } = {
       serviceType,
       language,
       stops,
-      specialRequests,
+      specialRequests: validSpecialRequests,
       isRouteOptimized,
       item,
       cashOnDelivery,
