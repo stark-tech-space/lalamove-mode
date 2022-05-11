@@ -20,9 +20,8 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const lalamove = new Lalamove({
   baseUrl: "https://rest.sandbox.lalamove.com",
-  apiKey: "pk_test_ed5cd3bc1f901c67dde6d768225ebf4b",
-  apiSecret:
-    "sk_test_OSnKYxn/uBbVf3UHYev8V+PsVXrsYPx6c7efJwYGzwL1OQn+IjdB0d2TXxz0yiYm",
+  apiKey: process.env.LALAMOVE_APIKEY,
+  apiSecret: process.env.LALAMOVE_APISECRET,
   market: Market.TAIWAN,
 });
 let quotation: QuoteResponse;
