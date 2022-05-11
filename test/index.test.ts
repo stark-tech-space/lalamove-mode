@@ -146,18 +146,19 @@ describe("try to change driver and cancel order", () => {
     // expect(orderDetail).toHaveProperty("cashOnDelivery");
   });
 
-  it("change driver fail", async () => {
-    const driverCancel = await lalamove
-      .changeDriver({
-        orderId: order.orderId,
-        driverId: orderDetail.driverId,
-        reason: Reason.DRIVER_ASKED_CHANGE,
-      })
-      .catch((err) => {
-        const status = JSON.parse(err.message).error.status;
-        expect(status).toBe(422);
-      });
-  });
+  // change driver需要先手動接單，才能拿到driverId,或是可以手動放上已經有接單且過15分鐘的訂單跟driverId來測試，記得把assert改成正確的東西。
+  // it("change driver fail", async () => {
+  //   const driverCancel = await lalamove
+  //     .changeDriver({
+  //       orderId: order.orderId,
+  //       driverId: orderDetail.driverId,
+  //       reason: Reason.DRIVER_ASKED_CHANGE,
+  //     })
+  //     .catch((err) => {
+  //       const status = JSON.parse(err.message).error.status;
+  //       expect(status).toBe(422);
+  //     });
+  // });
 
   it("cancel order", async () => {
     const orderCancel = await lalamove.cancelOrder(order.orderId);
