@@ -397,7 +397,7 @@ const getValidSpecialRequests = ({
   switch (city) {
     case City.TW_TPE: {
       switch (serviceType) {
-        case ServiceTypeTW.MOTORCYCLE: {
+        case serviceTypeMap.TW.MOTORCYCLE: {
           validSpecialRequest = [
             specialRequests.Lalabag,
             specialRequests.HelpBuy,
@@ -411,7 +411,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case ServiceTypeTW.MPV: {
+        case serviceTypeMap.TW.MPV: {
           validSpecialRequest = [
             specialRequests.FragileGood,
             specialRequests.PaidByRecipient,
@@ -431,7 +431,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case ServiceTypeTW.VAN: {
+        case serviceTypeMap.TW.VAN: {
           validSpecialRequest = [
             specialRequests.FragileGood,
             specialRequests.PaidByRecipient,
@@ -445,7 +445,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case ServiceTypeTW.TRUCK175: {
+        case serviceTypeMap.TW.TRUCK175: {
           break;
         }
       }
