@@ -84,10 +84,10 @@ export enum ServiceTypeTW {
   TRUCK175 = "TRUCK175",
 }
 
-export enum SpecialRequestTW {
+export enum SpecialRequestTW_TPE {
   FRAGILE_GOODS = "FRAGILE_GOODS",
   THERMAL_BAG_1 = "THERMAL_BAG_1",
-  PURCHASE_SERVICE_1 = "PURCHASE_SERVICE_1",
+  HelpBuy = "PURCHASE_SERVICE_1",
   PURCHASE_SERVICE_2 = "PURCHASE_SERVICE_2",
   PURCHASE_SERVICE_3 = "PURCHASE_SERVICE_3",
   PETS = "PETS",
@@ -188,20 +188,6 @@ export type DeliveryInfo = {
   remarks: { [key: string]: string };
 };
 
-// TODO: other market its SpecialRequest
-export type SpecialRequest = {
-  [Market.TAIWAN]: SpecialRequests;
-  [Market.BRASIL]: SpecialRequests;
-  [Market.Hong_Kong]: SpecialRequests;
-  [Market.INDONESIA]: SpecialRequests;
-  [Market.MALAYSIA]: SpecialRequests;
-  [Market.MEXICO]: SpecialRequests;
-  [Market.PHILIPPINES]: SpecialRequests;
-  [Market.SINGAPORE]: SpecialRequests;
-  [Market.THAILAND]: SpecialRequests;
-  [Market.VIETNAM]: SpecialRequests;
-};
-
 export type DeliveryStop = {
   stopId: string;
   coordinates: {
@@ -220,7 +206,7 @@ export type QuoteRequest = {
   language: Languages[Market];
   stops: Array<Omit<DeliveryStop, "stopId">>;
   scheduleAt?: Date; // UTC ISO8601 format
-  specialRequests?: Array<SpecialRequest[Market]>;
+  specialRequests?: Array<typeof specialRequestMap[City][ServiceType]>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
@@ -268,7 +254,7 @@ export type QuoteResponse = {
   quotationId: string;
   scheduleAt: string;
   serviceType: ServiceTypeTW;
-  specialRequests?: Array<SpecialRequest[Market]>;
+  specialRequests?: Array<typeof specialRequestMap[City][ServiceType]>;
   expiresAt: string; // 5 mins
   priceBreakdown: PriceBreakdown;
   stops: Array<Stop>;
@@ -365,10 +351,131 @@ export type AddPriorityFeeResponse = {
 };
 
 // TODO: add other market SpecialRequests
-export type SpecialRequests = SpecialRequestTW;
+// export enum SpecialRequests {
+//   Lalabag = "THERMAL_BAG_1",
+//   HelpBuy = "PURCHASE_SERVICE_1",
+//   FragileGoods = "FRAGILE_GOODS",
+//   ChildPurchaseService1 = "PURCHASE_SERVICE_2",
+//   ChildPurchaseService2 = "PURCHASE_SERVICE_3",
+//   ENGLISH = "ENGLISH",
+//   ChildSingleSelect1 = "TOLL_FEE_1",
+//   ChildSingleSelect2 = "TOLL_FEE_2",
+//   ChildSingleSelect3 = "TOLL_FEE_3",
+// }
+
+export enum City {
+  TW_TPE = "TW_TPE",
+  TW_TXG = "TW_TXG",
+  TW_KHH = "TW_KHH",
+}
 
 export const specialRequestMap = {
-  [Market.TAIWAN]: SpecialRequestTW,
+  [City.TW_TPE]: {
+    [serviceTypeMap.TW.MOTORCYCLE]: {
+      Lalabag: "THERMAL_BAG_1",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      FragileGoods: "FRAGILE_GOODS",
+      ChildPurchaseService1: "PURCHASE_SERVICE_2",
+      ChildPurchaseService2: "PURCHASE_SERVICE_3",
+      ENGLISH: "ENGLISH",
+      ChildSingleSelect1: "TOLL_FEE_1",
+      ChildSingleSelect2: "TOLL_FEE_2",
+      ChildSingleSelect3: "TOLL_FEE_3",
+    },
+    [serviceTypeMap.TW.MPV]: {
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      RequireLift: "MOVING_SERVICE",
+      LalabagSUV: "THERMAL_BAG_1",
+      ChildMultiSelect1: "TOLL_FEE_1",
+      ChildMultiSelect2: "TOLL_FEE_2",
+      ChildMultiSelect3: "TOLL_FEE_3",
+      ChildMultiSelect4: "TOLL_FEE_4",
+      ChildMultiSelect5: "TOLL_FEE_5",
+      ChildMultiSelect6: "TOLL_FEE_6",
+      ChildMultiSelect7: "TOLL_FEE_7",
+      ChildMultiSelect8: "TOLL_FEE_8",
+      ChildMultiSelect9: "TOLL_FEE_9",
+      ChildMultiSelect10: "TOLL_FEE_10",
+    },
+    [serviceTypeMap.TW.VAN]: {
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+      thermalBag: "THERMAL_BAG_1",
+      PETS: "PETS",
+      ChildMultiSelect1: "TOLL_FEE_1",
+      ChildMultiSelect2: "TOLL_FEE_2",
+      ChildMultiSelect3: "TOLL_FEE_3",
+    },
+    [serviceTypeMap.TW.TRUCK175]: {},
+  },
+  [City.TW_TXG]: {
+    [serviceTypeMap.TW.MOTORCYCLE]: {
+      Lalabag: "THERMAL_BAG_1",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+    },
+    [serviceTypeMap.TW.MPV]: {
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+    },
+    [serviceTypeMap.TW.TRUCK175]: {
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      SelfServedHouseMoving: "MOVING_SERVICE",
+      MovingUpstairsWithElevator: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+      MovingUpstairsWithoutElevator4to6F: "MOVING_SERVICE_3",
+      Tailgate: "TAILBOARD",
+      Refrigerator: "REFRIGERATED_UV_1",
+      Freezer: "REFRIGERATED_UV_2",
+      PortageFee: "MOVING_SERVICE_4",
+      ProfessionalHouseMoving: "MOVING_SERVICE_1",
+      MovingUpstairsWithoutElevatorB1and2to3F: "MOVING_SERVICE_2",
+    },
+    [serviceTypeMap.TW.VAN]: {
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+    },
+  },
+  [City.TW_KHH]: {
+    [serviceTypeMap.TW.MOTORCYCLE]: {
+      HelpBuy: "PURCHASE_SERVICE_1",
+      FragileGoods: "FRAGILE_GOODS",
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      Lalabag: "THERMAL_BAG_1",
+    },
+    [serviceTypeMap.TW.MPV]: {
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      FragileGoods: "FRAGILE_GOODS",
+      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+    },
+    [serviceTypeMap.TW.TRUCK175]: {
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      FragileGoods: "FRAGILE_GOODS",
+      MovingUpstairsWithoutElevatorB1and2to3F: "MOVING_SERVICE_2",
+      RequireLiftWithElevator: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+      Tailgate: "TAILBOARD",
+      Refrigerator: "REFRIGERATED_UV_1",
+      Freezer: "REFRIGERATED_UV_2",
+      PortageFee: "MOVING_SERVICE_4",
+      MovingUpstairsWithoutElevator4to6F: "MOVING_SERVICE_3",
+    },
+    [serviceTypeMap.TW.VAN]: {
+      PaidByRecipient: "CASH_ON_DELIVERY",
+      HelpBuy: "PURCHASE_SERVICE_1",
+      FragileGoods: "FRAGILE_GOODS",
+      RequireLift: "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+    },
+  },
 };
 
 export class LalamoveException extends Error {
@@ -628,6 +735,13 @@ export class Lalamove {
       url: `/v3/orders/${orderId}/priority-fee`,
       method: HttpMethod.POST,
       body: { data: requestBody },
+    });
+  }
+
+  async getCityInfo() {
+    return this.request({
+      url: "/v3/cities",
+      method: HttpMethod.GET,
     });
   }
 }

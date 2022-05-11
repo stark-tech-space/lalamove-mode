@@ -1,7 +1,9 @@
 import * as dotenv from "dotenv";
 dotenv.config();
+// import util from "util";
 import {
   Category,
+  City,
   HandlingInstructions,
   Lalamove,
   LanguagesTW,
@@ -26,13 +28,22 @@ const lalamove = new Lalamove({
 });
 let quotation: QuoteResponse | null = null;
 let order: OrderPlacementResponse | null = null;
+
+// for see city info
+
+// const result = await lalamove.getCityInfo();
+
+// console.log(
+//   util.inspect(result, { showHidden: false, depth: null, colors: true })
+// );
+
 describe("Lalamove Integration Test", () => {
   it("Get Quote", async () => {
     const orderTime = addMinutes(15, new Date());
 
     quotation = await lalamove.getQuote({
       serviceType: serviceTypeMap.TW.MOTORCYCLE,
-      specialRequests: [specialRequestMap[Market.TAIWAN].ENGLISH],
+      specialRequests: [specialRequestMap[City.TW_TPE].MPV.HelpBuy],
       language: LanguagesTW.zh_TW,
       stops: [
         {
