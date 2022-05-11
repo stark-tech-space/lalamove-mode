@@ -13,7 +13,7 @@ import {
   QuoteResponse,
   Reason,
   serviceTypeMap,
-  specialRequestMap,
+  specialRequests,
   Weight,
 } from "../src";
 import addMinutes from "date-fns/fp/addMinutes";
@@ -42,8 +42,14 @@ describe("Lalamove Integration Test", () => {
     const orderTime = addMinutes(15, new Date());
 
     quotation = await lalamove.getQuote({
-      serviceType: serviceTypeMap.TW.MOTORCYCLE,
-      specialRequests: [specialRequestMap[City.TW_TPE].MPV.HelpBuy],
+      city: City.TW_TPE,
+      serviceType: serviceTypeMap.TW.VAN,
+      specialRequests: [
+        // legal
+        specialRequests.Pets,
+        // illegal
+        specialRequests.ChildMultiSelect10,
+      ],
       language: LanguagesTW.zh_TW,
       stops: [
         {
@@ -69,6 +75,8 @@ describe("Lalamove Integration Test", () => {
       },
       isRouteOptimized: true,
     });
+
+    // console.log(quotation!.specialRequests);
 
     expect(quotation).toHaveProperty("quotationId");
     expect(quotation).toHaveProperty("scheduleAt");
