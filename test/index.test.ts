@@ -1,150 +1,167 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
+import {
+  Category,
+  HandlingInstructions,
+  Lalamove,
+  LanguagesTW,
+  Market,
+  orderDetailResponse,
+  orderPlacementResponse,
+  quoteResponse,
+  Reason,
+  serviceType,
+  specialRequestMap,
+  Weight,
+} from "../src";
+import addMinutes from "date-fns/fp/addMinutes";
 
-import { Country, Lalamove, serviceType, specialRequest } from '../src';
-import addMinutes from 'date-fns/fp/addMinutes';
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const lalamove = new Lalamove({
-  baseUrl: process.env.LALAMOVE_BASE_URL || '',
-  apiKey: process.env.LALAMOVE_API_KEY || '',
-  apiSecret: process.env.LALAMOVE_API_SECRET || '',
-  country: Country.TW_TPE,
+  baseUrl: "https://rest.sandbox.lalamove.com",
+  apiKey: "pk_test_ed5cd3bc1f901c67dde6d768225ebf4b",
+  apiSecret:
+    "sk_test_OSnKYxn/uBbVf3UHYev8V+PsVXrsYPx6c7efJwYGzwL1OQn+IjdB0d2TXxz0yiYm",
+  market: Market.TAIWAN,
 });
-
-describe('Lalamove Integration Test', () => {
-  it('should pass the assertions', async () => {
+let quotation: quoteResponse;
+let order: orderPlacementResponse;
+describe("Lalamove Integration Test", () => {
+  it("Get Quote", async () => {
     const orderTime = addMinutes(15, new Date());
 
-    console.log('Get Quote');
-    const quotation = await lalamove.getQuote({
-      serviceType: serviceType[lalamove.getCountry()].MOTORCYCLE,
-      destinations: [
+    quotation = await lalamove.getQuote({
+      serviceType: serviceType.TW_TPE.MOTORCYCLE,
+      specialRequests: [specialRequestMap[Market.TAIWAN].ENGLISH],
+      language: LanguagesTW.zh_TW,
+      stops: [
         {
-          location: {
-            lat: 25.0300623,
-            lng: 121.5546788,
+          coordinates: {
+            lat: "25.01972950042076",
+            lng: "121.52980498651789",
           },
-          addresses: {
-            zh_TW: {
-              displayString: '台北市大安區臨江街106-5號',
-            },
-          },
+          address: "台北市大安區羅斯福路三段233號",
         },
         {
-          location: {
-            lat: 25.051514,
-            lng: 121.5214066,
+          coordinates: {
+            lat: "25.023258559494685",
+            lng: "121.52866772996325",
           },
-          addresses: {
-            zh_TW: {
-              displayString: '台灣台北市中山區中山北路一段18之二號',
-            },
-          },
+          address: "台北市大安區師大路93巷1號",
         },
       ],
-      deliveryInfo: [
-        {
-          stopIndex: 1,
-          receiver: {
-            name: 'Weserve Tester',
-            phone: '0955940336',
-          },
-          remarks: {
-            樓層: '1樓',
-            備註: '',
-            代收金額: '701',
-          },
-        },
-      ],
-      sender: {
-        name: '天使雞排 - 通化店',
-        phone: '0908309579',
+      item: {
+        quantity: "3",
+        weight: Weight.LESS_THAN_3KG,
+        categories: [Category.FOOD_DELIVERY],
+        handlingInstructions: [HandlingInstructions.KEEP_UPRIGHT],
       },
-      scheduleAt: orderTime,
-      specialRequest: [specialRequest[lalamove.getCountry()].HELP_BUY],
+      isRouteOptimized: true,
     });
 
-    expect(quotation).toBeDefined();
-    expect(quotation).toHaveProperty('totalFee');
-    expect(quotation).toHaveProperty('totalFeeCurrency');
+    expect(quotation).toHaveProperty("quotationId");
+    expect(quotation).toHaveProperty("scheduleAt");
+    expect(quotation).toHaveProperty("expiresAt");
+    expect(quotation).toHaveProperty("serviceType");
+    expect(quotation).toHaveProperty("specialRequests");
+    expect(quotation).toHaveProperty("language");
+    expect(quotation).toHaveProperty("stops");
+    expect(quotation).toHaveProperty("isRouteOptimized");
+    expect(quotation).toHaveProperty("priceBreakdown");
+    expect(quotation).toHaveProperty("item");
+    // expect(quotation).toHaveProperty("cashOnDelivery");
+  });
 
-    console.log('Place Order');
-    const order = await lalamove.placeOrder({
-      serviceType: serviceType[lalamove.getCountry()].MOTORCYCLE,
-      destinations: [
-        {
-          location: {
-            lat: 25.0300623,
-            lng: 121.5546788,
-          },
-          addresses: {
-            zh_TW: {
-              displayString: '台北市大安區臨江街106-5號',
-            },
-          },
-        },
-        {
-          location: {
-            lat: 25.051514,
-            lng: 121.5214066,
-          },
-          addresses: {
-            zh_TW: {
-              displayString: '台灣台北市中山區中山北路一段18之二號',
-            },
-          },
-        },
-      ],
-      deliveryInfo: [
-        {
-          stopIndex: 1,
-          receiver: {
-            name: 'Weserve Test Customer',
-            phone: '0955940336',
-          },
-          remarks: {
-            樓層: '1樓',
-            備註: '',
-            代收金額: '701',
-          },
-        },
-      ],
+  it("Place Order", async () => {
+    order = await lalamove.placeOrder({
+      quotationId: quotation.quotationId,
       sender: {
-        name: 'Weserve Test Store',
-        phone: '0955940336',
+        stopId: quotation?.stops[1].stopId || "",
+        name: "Weserve Test Store",
+        phone: "+886912345678",
       },
-      scheduleAt: orderTime,
-      specialRequest: [specialRequest[lalamove.getCountry()].HELP_BUY],
-      totalFee: {
-        amount: quotation.totalFee,
-        currency: quotation.totalFeeCurrency,
-      },
-      smsForReceiver: true,
+      recipients: [
+        {
+          stopId: quotation?.stops[0].stopId || "",
+          name: "Weserve Test Customer",
+          phone: "+886912345123",
+        },
+      ],
+      isRecipientSMSEnabled: false,
+      isPODEnabled: false,
+      metadata: { storeName: "test weserve" },
     });
 
     expect(order).toBeDefined();
     //expect(order).toHaveProperty('customerOrderId'); //deprecated in sandbox environment.
-    expect(order).toHaveProperty('orderRef');
+    expect(order).toHaveProperty("orderId");
+    expect(order).toHaveProperty("quotationId");
+    expect(order).toHaveProperty("priceBreakdown");
+    // expect(order).toHaveProperty("priorityFee");
+    expect(order).toHaveProperty("shareLink");
+    expect(order).toHaveProperty("status");
+    expect(order).toHaveProperty("distance");
+    expect(order).toHaveProperty("stops");
+    expect(order).toHaveProperty("metadata");
+    // expect(order).toHaveProperty("cashOnDelivery");
+  });
 
-    console.log('Add Tips');
-    const addTips = await lalamove.addPriorityFee(order.orderRef, 20);
+  it("Add tips", async () => {
+    const addTips = await lalamove.addPriorityFee(order.orderId, 30);
 
     expect(addTips).toBeDefined();
-    expect(Object.keys(addTips).length).toBe(0);
+    expect(addTips).toHaveProperty("orderId");
+    expect(addTips).toHaveProperty("quotationId");
+    expect(addTips).toHaveProperty("priceBreakdown");
+    expect(addTips).toHaveProperty("priceBreakdown.priorityFee");
+    expect(addTips).toHaveProperty("status");
+    expect(addTips).toHaveProperty("distance");
+  });
+});
 
-    console.log('Order Detail');
-    const orderDetail = await lalamove.orderDetail(order.orderRef);
+console.log(
+  "在運行下列測試之前，請先到https://partnerportal.lalamove.com/records 接單，不過取消司機需要接單超過15分鐘才可取消。"
+);
+
+// 在運行下列測試之前，請先到https://partnerportal.lalamove.com/records 接單，不過取消司機需要接單超過15分鐘才可取消。
+
+describe("try to change driver and cancel order", () => {
+  let orderDetail: orderDetailResponse;
+  it("order detail", async () => {
+    await delay(15000);
+    orderDetail = await lalamove.orderDetail(order.orderId);
 
     expect(orderDetail).toBeDefined();
-    expect(orderDetail).toHaveProperty('status');
-    expect(orderDetail).toHaveProperty('price');
-    expect(orderDetail.price).toBeDefined();
-    expect(orderDetail.price).toHaveProperty('amount');
-    expect(orderDetail.price).toHaveProperty('currency');
-    expect(orderDetail).toHaveProperty('driverId');
+    expect(orderDetail).toHaveProperty("orderId");
+    expect(orderDetail).toHaveProperty("quotationId");
+    expect(orderDetail).toHaveProperty("priceBreakdown");
+    expect(orderDetail).toHaveProperty("priceBreakdown.priorityFee");
+    // expect(orderDetail).toHaveProperty("priorityFee");
+    expect(orderDetail).toHaveProperty("driverId");
+    expect(orderDetail).toHaveProperty("shareLink");
+    expect(orderDetail).toHaveProperty("status");
+    expect(orderDetail).toHaveProperty("distance");
+    expect(orderDetail).toHaveProperty("stops");
+    expect(orderDetail).toHaveProperty("metadata");
+    // expect(orderDetail).toHaveProperty("cashOnDelivery");
+  });
 
-    console.log('Order Cancel');
-    const orderCancel = await lalamove.cancelOrder(order.orderRef);
+  it("change driver fail", async () => {
+    const driverCancel = await lalamove
+      .changeDriver({
+        orderId: order.orderId,
+        driverId: orderDetail.driverId,
+        reason: Reason.DRIVER_ASKED_CHANGE,
+      })
+      .catch((err) => {
+        const status = JSON.parse(err.message).error.status;
+        expect(status).toBe(422);
+      });
+  });
+
+  it("cancel order", async () => {
+    const orderCancel = await lalamove.cancelOrder(order.orderId);
     expect(orderCancel).toBeDefined();
   });
 });
