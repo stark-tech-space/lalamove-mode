@@ -19,9 +19,9 @@ import addMinutes from "date-fns/fp/addMinutes";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const lalamove = new Lalamove({
-  baseUrl: "https://rest.sandbox.lalamove.com",
-  apiKey: process.env.LALAMOVE_APIKEY || "",
-  apiSecret: process.env.LALAMOVE_APISECRET || "",
+  baseUrl: process.env.LALAMOVE_BASE_URL || "",
+  apiKey: process.env.LALAMOVE_API_KEY || "",
+  apiSecret: process.env.LALAMOVE_API_SECRET || "",
   market: Market.TAIWAN,
 });
 let quotation: QuoteResponse;
