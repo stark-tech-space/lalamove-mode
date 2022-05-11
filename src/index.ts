@@ -4,12 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import CryptoJS from "crypto-js";
 import * as superagent from "superagent";
 
-export enum Country {
-  TW_TPE = "TW_TPE",
-  TW_TXG = "TW_TXG",
-  TW_KHH = "TW_KHH",
-}
-
 export enum Market {
   TAIWAN = "TW",
   BRASIL = "BR",
@@ -21,6 +15,12 @@ export enum Market {
   SINGAPORE = "SG",
   THAILAND = "TH",
   VIETNAM = "VN",
+}
+
+export enum City {
+  TW_TPE = "TW_TPE",
+  TW_TXG = "TW_TXG",
+  TW_KHH = "TW_KHH",
 }
 
 export enum LanguagesTW {
@@ -82,19 +82,6 @@ export enum ServiceTypeTW {
   MPV = "MPV",
   VAN = "VAN",
   TRUCK175 = "TRUCK175",
-}
-
-export enum SpecialRequestTW_TPE {
-  FRAGILE_GOODS = "FRAGILE_GOODS",
-  THERMAL_BAG_1 = "THERMAL_BAG_1",
-  HelpBuy = "PURCHASE_SERVICE_1",
-  PURCHASE_SERVICE_2 = "PURCHASE_SERVICE_2",
-  PURCHASE_SERVICE_3 = "PURCHASE_SERVICE_3",
-  PETS = "PETS",
-  ENGLISH = "ENGLISH",
-  TOLL_FEE_1 = "TOLL_FEE_1",
-  TOLL_FEE_2 = "TOLL_FEE_2",
-  TOLL_FEE_3 = "TOLL_FEE_3",
 }
 
 export enum LalamoveOrderStatus {
@@ -167,16 +154,6 @@ export type Distance = {
   unit: string;
 };
 
-export type Address = {
-  displayString: string;
-  country?: Country;
-};
-
-export type WayPoint = {
-  location: Location;
-  addresses: { [languageCode in Languages[Market]]?: Address };
-};
-
 export type Contact = {
   name: string;
   phone: string; // E.164 format
@@ -189,6 +166,14 @@ export type DeliveryInfo = {
 };
 
 export type DeliveryStop = {
+  coordinates: {
+    lat: string;
+    lng: string;
+  };
+  address: string;
+};
+
+export type DeliveryStopWithId = {
   stopId: string;
   coordinates: {
     lat: string;
@@ -204,7 +189,7 @@ export type CashOnDelivery = {
 export type QuoteRequest = {
   serviceType: ServiceType;
   language: Languages[Market];
-  stops: Array<Omit<DeliveryStop, "stopId">>;
+  stops: Array<DeliveryStop>;
   scheduleAt?: Date; // UTC ISO8601 format
   specialRequests?: Array<typeof specialRequestMap[City][ServiceType]>;
   isRouteOptimized?: boolean; // multiple drop off
@@ -231,6 +216,7 @@ export type Item = {
   categories: Array<Category>;
   handlingInstructions: Array<HandlingInstructions>;
 };
+
 export type DeliveryDetails = {
   stopId: string;
   name: string;
@@ -279,7 +265,7 @@ export enum PODStauts {
   FAILED = "FAILED",
 }
 
-export type Stop = DeliveryStop & {
+export type Stop = DeliveryStopWithId & {
   name?: string;
   phone?: string;
   POD?: {
@@ -349,25 +335,6 @@ export type AddPriorityFeeResponse = {
   distance: Distance;
   stops: Array<Stop>;
 };
-
-// TODO: add other market SpecialRequests
-// export enum SpecialRequests {
-//   Lalabag = "THERMAL_BAG_1",
-//   HelpBuy = "PURCHASE_SERVICE_1",
-//   FragileGoods = "FRAGILE_GOODS",
-//   ChildPurchaseService1 = "PURCHASE_SERVICE_2",
-//   ChildPurchaseService2 = "PURCHASE_SERVICE_3",
-//   ENGLISH = "ENGLISH",
-//   ChildSingleSelect1 = "TOLL_FEE_1",
-//   ChildSingleSelect2 = "TOLL_FEE_2",
-//   ChildSingleSelect3 = "TOLL_FEE_3",
-// }
-
-export enum City {
-  TW_TPE = "TW_TPE",
-  TW_TXG = "TW_TXG",
-  TW_KHH = "TW_KHH",
-}
 
 export const specialRequestMap = {
   [City.TW_TPE]: {
