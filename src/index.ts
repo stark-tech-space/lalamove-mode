@@ -555,10 +555,9 @@ export class Lalamove {
 
       throw new Error(
         JSON.stringify({
-          error,
-          // status
-          // description: response.text,
-          // body: response.body,
+          status,
+          description: response.text,
+          body: response.body,
         })
       );
     }

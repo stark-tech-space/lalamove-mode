@@ -162,8 +162,8 @@ describe("try to change driver and cancel order", () => {
   it.skip("change driver fail", async () => {
     const driverCancel = await lalamove
       .changeDriver({
-        orderId: order.orderId,
-        driverId: orderDetail.driverId,
+        orderId: order!.orderId,
+        driverId: orderDetail!.driverId,
         reason: Reason.DRIVER_ASKED_CHANGE,
       })
       .catch((err) => {
