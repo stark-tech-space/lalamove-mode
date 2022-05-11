@@ -173,29 +173,32 @@ export type DeliveryStop = {
   address: string;
 };
 
-export type DeliveryStopWithId = {
+export type DeliveryStopWithId = DeliveryStop & {
   stopId: string;
-  coordinates: {
-    lat: string;
-    lng: string;
-  };
-  address: string;
 };
 
 export type CashOnDelivery = {
   amount: string;
 };
 
+/**
+ * scheduleAt is Date but in the end need to covert to string.
+ *  Need city and serviceType to filter valid specialRequests
+ */
+export type rawQuoteRequest = Omit<QuoteRequest, "scheduleAt"> & {
+  city: City;
+  scheduleAt?: Date;
+};
+
 export type QuoteRequest = {
   serviceType: ServiceType;
   language: Languages[Market];
   stops: Array<DeliveryStop>;
-  scheduleAt?: Date; // UTC ISO8601 format
+  scheduleAt?: string; // UTC ISO8601 format
   specialRequests?: Array<specialRequests>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
-  city: City;
 };
 
 export enum Weight {
@@ -702,16 +705,15 @@ export class Lalamove {
     item,
     cashOnDelivery,
     city,
-  }: QuoteRequest): Promise<QuoteResponse> {
+  }: rawQuoteRequest): Promise<QuoteResponse> {
     const validSpecialRequests = getValidSpecialRequests({
       city,
       serviceType,
       specialRequestsFromRequest: specialRequests,
     });
+
     // create request body
-    const requestBody: Omit<QuoteRequest, "scheduleAt" | "city"> & {
-      scheduleAt?: string;
-    } = {
+    const requestBody: QuoteRequest = {
       serviceType,
       language,
       stops,
