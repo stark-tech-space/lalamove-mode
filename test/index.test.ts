@@ -48,7 +48,7 @@ describe('Lalamove Integration Test', () => {
         // legal
         SpecialRequests.PETS,
         // illegal
-        SpecialRequests.ChildMultiSelect10,
+        // SpecialRequests.ChildMultiSelect10,
       ],
       language: LanguagesTW.zh_TW,
       stops: [
