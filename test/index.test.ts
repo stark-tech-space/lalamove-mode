@@ -82,7 +82,7 @@ describe('Lalamove Integration Test', () => {
     expect(quotation).toHaveProperty('scheduleAt');
     expect(quotation).toHaveProperty('expiresAt');
     expect(quotation).toHaveProperty('serviceType');
-    expect(quotation).toHaveProperty('SpecialRequests');
+    expect(quotation).toHaveProperty('specialRequests');
     expect(quotation).toHaveProperty('language');
     expect(quotation).toHaveProperty('stops');
     expect(quotation).toHaveProperty('isRouteOptimized');
