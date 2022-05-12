@@ -13,7 +13,7 @@ import {
   QuoteResponse,
   Reason,
   SERVICE_TYPE_MAP,
-  SpecialRequests,
+  SpecialRequest,
   Weight,
 } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
@@ -46,9 +46,9 @@ describe('Lalamove Integration Test', () => {
       serviceType: SERVICE_TYPE_MAP.TW.VAN,
       specialRequests: [
         // legal
-        SpecialRequests.PETS,
+        SpecialRequest.PETS,
         // illegal
-        SpecialRequests.ChildMultiSelect10,
+        SpecialRequest.ChildMultiSelect10,
       ],
       language: LanguagesTW.zh_TW,
       stops: [
@@ -76,7 +76,7 @@ describe('Lalamove Integration Test', () => {
       isRouteOptimized: true,
     });
 
-    // console.log(quotation!.SpecialRequests);
+    // console.log(quotation!.specialRequest);
 
     expect(quotation).toHaveProperty('quotationId');
     expect(quotation).toHaveProperty('scheduleAt');

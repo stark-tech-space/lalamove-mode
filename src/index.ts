@@ -183,7 +183,7 @@ export type CashOnDelivery = {
 
 /**
  * scheduleAt is Date but in the end need to covert to string.
- *  Need city and serviceType to filter valid SpecialRequests
+ *  Need city and serviceType to filter valid SpecialRequest
  */
 export type RawQuoteRequest = Omit<QuoteRequest, 'scheduleAt'> & {
   city: City;
@@ -195,7 +195,7 @@ export type QuoteRequest = {
   language: Languages[Market];
   stops: Array<DeliveryStop>;
   scheduleAt?: string; // UTC ISO8601 format
-  specialRequests?: Array<SpecialRequests>;
+  specialRequests?: Array<SpecialRequest>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
@@ -278,13 +278,13 @@ export type OrderPlacementRequest = {
  * @param priceBreakdown
  * @param expiresAt display date string. (5 mins)
  * @param item optional but recommend to have
- * @param SpecialRequests optional
+ * @param SpecialRequest optional
  */
 export type QuoteResponse = {
   quotationId: string;
   scheduleAt: string;
   serviceType: ServiceTypeTW;
-  SpecialRequests?: Array<SpecialRequests>;
+  SpecialRequest?: Array<SpecialRequest>;
   expiresAt: string; // 5 mins
   priceBreakdown: PriceBreakdown;
   stops: Array<Stop>;
@@ -405,7 +405,7 @@ export type AddPriorityFeeResponse = {
   stops: Array<Stop>;
 };
 
-export enum SpecialRequests {
+export enum SpecialRequest {
   LALABAG = 'THERMAL_BAG_1',
   HELP_BUY = 'PURCHASE_SERVICE_1',
   FRAGILE_GOODS = 'FRAGILE_GOODS',
@@ -456,57 +456,57 @@ const getValidSpecialRequests = ({
 }: {
   serviceType: ServiceType;
   city: City;
-  specialRequestsFromRequest: Array<SpecialRequests>;
+  specialRequestsFromRequest: Array<SpecialRequest>;
 }) => {
-  let validSpecialRequest: Array<SpecialRequests> = [];
+  let validSpecialRequest: Array<SpecialRequest> = [];
   switch (city) {
     case City.TW_TPE: {
       switch (serviceType) {
         case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            SpecialRequests.LALABAG,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.CHILD_PURCHASE_SERVICE_1,
-            SpecialRequests.CHILD_PURCHASE_SERVICE_2,
-            SpecialRequests.ENGLISH,
-            SpecialRequests.ChildSingleSelect1,
-            SpecialRequests.ChildSingleSelect2,
-            SpecialRequests.ChildSingleSelect3,
+            SpecialRequest.LALABAG,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.CHILD_PURCHASE_SERVICE_1,
+            SpecialRequest.CHILD_PURCHASE_SERVICE_2,
+            SpecialRequest.ENGLISH,
+            SpecialRequest.ChildSingleSelect1,
+            SpecialRequest.ChildSingleSelect2,
+            SpecialRequest.ChildSingleSelect3,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.REQUIRE_LIFT,
-            SpecialRequests.LALABAG,
-            SpecialRequests.ChildMultiSelect1,
-            SpecialRequests.ChildMultiSelect2,
-            SpecialRequests.ChildMultiSelect3,
-            SpecialRequests.ChildMultiSelect4,
-            SpecialRequests.ChildMultiSelect5,
-            SpecialRequests.ChildMultiSelect6,
-            SpecialRequests.ChildMultiSelect7,
-            SpecialRequests.ChildMultiSelect8,
-            SpecialRequests.ChildMultiSelect9,
-            SpecialRequests.ChildMultiSelect10,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.LALABAG,
+            SpecialRequest.ChildMultiSelect1,
+            SpecialRequest.ChildMultiSelect2,
+            SpecialRequest.ChildMultiSelect3,
+            SpecialRequest.ChildMultiSelect4,
+            SpecialRequest.ChildMultiSelect5,
+            SpecialRequest.ChildMultiSelect6,
+            SpecialRequest.ChildMultiSelect7,
+            SpecialRequest.ChildMultiSelect8,
+            SpecialRequest.ChildMultiSelect9,
+            SpecialRequest.ChildMultiSelect10,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.REQUIRE_LIFT,
-            SpecialRequests.THERMAL_BAG,
-            SpecialRequests.PETS,
-            SpecialRequests.ChildSingleSelect1,
-            SpecialRequests.ChildSingleSelect2,
-            SpecialRequests.ChildSingleSelect3,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.THERMAL_BAG,
+            SpecialRequest.PETS,
+            SpecialRequest.ChildSingleSelect1,
+            SpecialRequest.ChildSingleSelect2,
+            SpecialRequest.ChildSingleSelect3,
           ];
           break;
         }
@@ -520,44 +520,44 @@ const getValidSpecialRequests = ({
       switch (serviceType) {
         case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            SpecialRequests.LALABAG,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequest.LALABAG,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.TRUCK175: {
           validSpecialRequest = [
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.SELF_SERVED_HOUSE_MOVING,
-            SpecialRequests.REQUIRE_LIFT,
-            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
-            SpecialRequests.TAILBOARD,
-            SpecialRequests.REFRIGERATOR,
-            SpecialRequests.FREEZER,
-            SpecialRequests.PORTAGE_FEE,
-            SpecialRequests.PROFESSIONAL_HOUSE_MOVING,
-            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
           ];
           break;
         }
@@ -568,42 +568,42 @@ const getValidSpecialRequests = ({
       switch (serviceType) {
         case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.LALABAG,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.LALABAG,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            SpecialRequests.HELP_BUY,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.TRUCK175: {
           validSpecialRequest = [
-            SpecialRequests.PAID_BY_RECIPIENT,
-            SpecialRequests.FRAGILE_GOODS,
-            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
-            SpecialRequests.REQUIRE_LIFT,
-            SpecialRequests.TAILBOARD,
-            SpecialRequests.REFRIGERATOR,
-            SpecialRequests.FREEZER,
-            SpecialRequests.PORTAGE_FEE,
-            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
           ];
           break;
         }
