@@ -216,12 +216,12 @@ export type WeightTW = Exclude<Weight, Weight.LESS_THAN_3KG>;
 export enum Category {
   FOOD_DELIVERY = 'FOOD_DELIVERY',
   OFFICE_ITEM = 'OFFICE_ITEM',
-  Spaghetti = 'Spaghetti',
-  Hotdog = 'Hotdog',
-  Burger = 'Burger',
-  FriedChicken = 'Fried Chicken',
-  Chicharon = 'Chicharon',
-  Tapa = 'Tapa',
+  SPAGHETTI = 'Spaghetti',
+  HOTDOG = 'Hotdog',
+  BURGER = 'Burger',
+  FRIED_CHICKEN = 'Fried Chicken',
+  CHICHARON = 'Chicharon',
+  TAPA = 'Tapa',
 }
 
 export type CategoryTW = Exclude<Category, Category.FOOD_DELIVERY | Category.OFFICE_ITEM>;
@@ -229,11 +229,11 @@ export type CategoryTW = Exclude<Category, Category.FOOD_DELIVERY | Category.OFF
 export enum HandlingInstructions {
   KEEP_UPRIGHT = 'KEEP_UPRIGHT',
   FRAGILE = 'Fragile',
-  KeepDry = 'Keep dry',
+  KEEP_DRY = 'Keep dry',
 }
 export type HandlingInstructionsTW = Extract<
   HandlingInstructions,
-  HandlingInstructions.FRAGILE | HandlingInstructions.KeepDry
+  HandlingInstructions.FRAGILE | HandlingInstructions.KEEP_DRY
 >;
 
 export type Item = {
