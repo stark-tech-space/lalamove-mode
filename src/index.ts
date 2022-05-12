@@ -159,12 +159,6 @@ export type Contact = {
   phone: string; // E.164 format
 };
 
-export type DeliveryInfo = {
-  stopIndex: number;
-  receiver: Contact;
-  remarks: { [key: string]: string };
-};
-
 export type DeliveryStop = {
   coordinates: {
     lat: string;
@@ -260,8 +254,8 @@ export type DeliveryDetails = {
 
 /**
  * @param quotationId use getQuote to get quotationId in response body
- * @param sender This information will be displayed to the driver.
- * @param recipients An array of DeliveryDetails, containing recipient contact and instruction per stop
+ * @param sender  name, phone, stopId  .This information will be displayed to the driver.
+ * @param recipients. array of  stopId, name, phone, remark(optional)  An array of DeliveryDetails, containing recipient contact and instruction per stop
  * @param isRecipientSMSEnabled (optional) Send delivery updates via SMS to THE recipient, or the recipient of the LAST STOP for multi-stop orders once the order has been picked-up by the driver.
 Default to true
  * @param isPODEnabled Request driver to carry out "Proof Of Delivery" for all stops in the order. Default to false
