@@ -44,11 +44,11 @@ describe('Lalamove Integration Test', () => {
     quotation = await lalamove.getQuote({
       city: City.TW_TPE,
       serviceType: SERVICE_TYPE_MAP.TW.VAN,
-      SpecialRequests: [
+      specialRequests: [
         // legal
         SpecialRequests.PETS,
         // illegal
-        // SpecialRequests.ChildMultiSelect10,
+        SpecialRequests.ChildMultiSelect10,
       ],
       language: LanguagesTW.zh_TW,
       stops: [

@@ -195,7 +195,7 @@ export type QuoteRequest = {
   language: Languages[Market];
   stops: Array<DeliveryStop>;
   scheduleAt?: string; // UTC ISO8601 format
-  SpecialRequests?: Array<SpecialRequests>;
+  specialRequests?: Array<SpecialRequests>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
@@ -754,7 +754,7 @@ export class Lalamove {
     language,
     stops,
     scheduleAt,
-    SpecialRequests = [],
+    specialRequests: specialRequestsFromRequest = [],
     isRouteOptimized,
     item,
     cashOnDelivery,
@@ -763,7 +763,7 @@ export class Lalamove {
     const validSpecialRequests = getValidSpecialRequests({
       city,
       serviceType,
-      specialRequestsFromRequest: SpecialRequests,
+      specialRequestsFromRequest,
     });
 
     // create request body
@@ -771,7 +771,7 @@ export class Lalamove {
       serviceType,
       language,
       stops,
-      SpecialRequests: validSpecialRequests,
+      specialRequests: validSpecialRequests,
       isRouteOptimized,
       item,
       cashOnDelivery,
