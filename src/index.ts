@@ -83,7 +83,7 @@ export enum ServiceTypeTW {
   MOTORCYCLE = 'MOTORCYCLE',
   VAN = 'VAN',
   TRUCK175 = 'TRUCK175',
-  MPV = 'SUV', // It should be SUV, but front-end have a lot MPV, that's why here is name MPV not SUV. Ideal for flowers, light furniture, and store order-in
+  SUV = 'SUV',
   TRUCK330 = 'TRUCK330',
 }
 
@@ -248,7 +248,7 @@ export type HandlingInstructionsTW = Extract<
 export type Item = {
   quantity: string;
   weight: Weight | '';
-  categories: Array<Category | []>;
+  categories: Array<Category>;
   handlingInstructions: Array<HandlingInstructions>;
 };
 
@@ -479,7 +479,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case SERVICE_TYPE_MAP.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.SUV: {
           validSpecialRequest = [
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.FRAGILE_GOODS,
@@ -544,7 +544,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case SERVICE_TYPE_MAP.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.SUV: {
           validSpecialRequest = [
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.FRAGILE_GOODS,
@@ -616,7 +616,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case SERVICE_TYPE_MAP.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.SUV: {
           validSpecialRequest = [
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.FRAGILE_GOODS,
@@ -680,7 +680,7 @@ const getValidSpecialRequests = ({
           ];
           break;
         }
-        case SERVICE_TYPE_MAP.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.SUV: {
           validSpecialRequest = [
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.FRAGILE_GOODS,
