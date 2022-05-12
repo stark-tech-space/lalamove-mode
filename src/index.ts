@@ -206,30 +206,34 @@ export type QuoteRequest = {
   cashOnDelivery?: CashOnDelivery;
 };
 
-export enum Weight {
-  LESS_THAN_3KG = 'LESS_THAN_3KG',
-  W1KG_TO_1KG = '0-1',
-  W1KG_TO_2KG = '1-2',
-  W2KG_TO_3KG = '2-3',
-  W3KG_TO_4KG = '3-4',
-  W4KG_TO_5KG = '4-5',
-  W5KG_TO_6KG = '5-6',
-}
+/**
+ * in production not offer Weight to choose yet (TW). plz send empty string
+ */
+export enum Weight {}
+// LESS_THAN_3KG = 'LESS_THAN_3KG',
+// W1KG_TO_1KG = '0-1',
+// W1KG_TO_2KG = '1-2',
+// W2KG_TO_3KG = '2-3',
+// W3KG_TO_4KG = '3-4',
+// W4KG_TO_5KG = '4-5',
+// W5KG_TO_6KG = '5-6',
 
-export type WeightTW = Exclude<Weight, Weight.LESS_THAN_3KG>;
+// export type WeightTW = Exclude<Weight, Weight.LESS_THAN_3KG>;
 
-export enum Category {
-  FOOD_DELIVERY = 'FOOD_DELIVERY',
-  OFFICE_ITEM = 'OFFICE_ITEM',
-  SPAGHETTI = 'Spaghetti',
-  HOTDOG = 'Hotdog',
-  BURGER = 'Burger',
-  FRIED_CHICKEN = 'Fried Chicken',
-  CHICHARON = 'Chicharon',
-  TAPA = 'Tapa',
-}
+/**
+ * in production not offer category to choose yet (TW). plz send empty array
+ */
+export enum Category {}
+// FOOD_DELIVERY = 'FOOD_DELIVERY',
+// OFFICE_ITEM = 'OFFICE_ITEM',
+// SPAGHETTI = 'Spaghetti',
+// HOTDOG = 'Hotdog',
+// BURGER = 'Burger',
+// FRIED_CHICKEN = 'Fried Chicken',
+// CHICHARON = 'Chicharon',
+// TAPA = 'Tapa',
 
-export type CategoryTW = Exclude<Category, Category.FOOD_DELIVERY | Category.OFFICE_ITEM>;
+// export type CategoryTW = Exclude<Category, Category.FOOD_DELIVERY | Category.OFFICE_ITEM>;
 
 export enum HandlingInstructions {
   KEEP_UPRIGHT = 'KEEP_UPRIGHT',
@@ -243,8 +247,8 @@ export type HandlingInstructionsTW = Extract<
 
 export type Item = {
   quantity: string;
-  weight: Weight;
-  categories: Array<Category>;
+  weight: Weight | '';
+  categories: Array<Category | []>;
   handlingInstructions: Array<HandlingInstructions>;
 };
 
@@ -387,14 +391,6 @@ export type DriverDetailResponse = {
     lng: string;
     updatedAt: string;
   };
-};
-
-export type DriverLocationResponse = {
-  location: {
-    lat: string;
-    lng: string;
-  };
-  updatedAt: string;
 };
 
 export type CancelOrderResponse = object;

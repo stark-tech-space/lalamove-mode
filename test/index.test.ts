@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 // import util from "util";
 import {
-  Category,
   City,
   HandlingInstructions,
   Lalamove,
@@ -14,7 +13,6 @@ import {
   Reason,
   SERVICE_TYPE_MAP,
   SpecialRequest,
-  Weight,
 } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
 
@@ -69,8 +67,8 @@ describe('Lalamove Integration Test', () => {
       ],
       item: {
         quantity: '3',
-        weight: Weight.LESS_THAN_3KG,
-        categories: [Category.FOOD_DELIVERY],
+        weight: '',
+        categories: [],
         handlingInstructions: [HandlingInstructions.KEEP_UPRIGHT],
       },
       isRouteOptimized: true,
