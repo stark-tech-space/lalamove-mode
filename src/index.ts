@@ -1,97 +1,97 @@
-import getTime from "date-fns/getTime";
-import format from "date-fns-tz/format";
-import { v4 as uuidv4 } from "uuid";
-import CryptoJS from "crypto-js";
-import * as superagent from "superagent";
+import getTime from 'date-fns/getTime';
+import format from 'date-fns-tz/format';
+import { v4 as uuidv4 } from 'uuid';
+import CryptoJS from 'crypto-js';
+import * as superagent from 'superagent';
 
 export enum Market {
-  TAIWAN = "TW",
-  BRASIL = "BR",
-  Hong_Kong = "HK",
-  INDONESIA = "ID",
-  MALAYSIA = "MY",
-  MEXICO = "MX",
-  PHILIPPINES = "PH",
-  SINGAPORE = "SG",
-  THAILAND = "TH",
-  VIETNAM = "VN",
+  TAIWAN = 'TW',
+  BRASIL = 'BR',
+  Hong_Kong = 'HK',
+  INDONESIA = 'ID',
+  MALAYSIA = 'MY',
+  MEXICO = 'MX',
+  PHILIPPINES = 'PH',
+  SINGAPORE = 'SG',
+  THAILAND = 'TH',
+  VIETNAM = 'VN',
 }
 
 export enum City {
-  TW_TPE = "TW_TPE",
-  TW_TXG = "TW_TXG",
-  TW_KHH = "TW_KHH",
+  TW_TPE = 'TW_TPE',
+  TW_TXG = 'TW_TXG',
+  TW_KHH = 'TW_KHH',
 }
 
 export enum LanguagesTW {
-  zh_TW = "zh_TW",
+  zh_TW = 'zh_TW',
 }
 
 export enum LanguagesHK {
-  en_HK = "en_HK",
-  zh_HK = "zh_HK",
+  en_HK = 'en_HK',
+  zh_HK = 'zh_HK',
 }
 
 export enum LanguagesBR {
-  en_BR = "en_BR",
-  pt_BR = "pt_BR",
+  en_BR = 'en_BR',
+  pt_BR = 'pt_BR',
 }
 
 export enum LanguagesID {
-  en_ID = "en_ID",
-  id_ID = "id_ID",
+  en_ID = 'en_ID',
+  id_ID = 'id_ID',
 }
 
 export enum LanguagesMY {
-  en_MY = "en_MY",
-  ms_MY = "ms_MY",
+  en_MY = 'en_MY',
+  ms_MY = 'ms_MY',
 }
 
 export enum LanguagesMX {
-  en_MX = "en_MX",
-  es_MX = "es_MX",
+  en_MX = 'en_MX',
+  es_MX = 'es_MX',
 }
 
 export enum LanguagesPH {
-  en_PH = "en_PH",
+  en_PH = 'en_PH',
 }
 
 export enum LanguagesSG {
-  en_SG = "en_SG",
+  en_SG = 'en_SG',
 }
 
 export enum LanguagesTH {
-  th_TH = "th_TH",
-  en_TH = "en_TH",
+  th_TH = 'th_TH',
+  en_TH = 'en_TH',
 }
 
 export enum LanguagesVN {
-  en_VN = "en_VN",
-  vi_VN = "vi_VN",
+  en_VN = 'en_VN',
+  vi_VN = 'vi_VN',
 }
 
 export enum HttpMethod {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  DELETE = "DELETE",
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
 }
 
 export enum ServiceTypeTW {
-  MOTORCYCLE = "MOTORCYCLE",
-  MPV = "MPV",
-  VAN = "VAN",
-  TRUCK175 = "TRUCK175",
+  MOTORCYCLE = 'MOTORCYCLE',
+  MPV = 'MPV',
+  VAN = 'VAN',
+  TRUCK175 = 'TRUCK175',
 }
 
 export enum LalamoveOrderStatus {
-  ASSIGNING_DRIVER = "ASSIGNING_DRIVER",
-  ON_GOING = "ON_GOING",
-  PICKED_UP = "PICKED_UP",
-  COMPLETED = "COMPLETED",
-  REJECTED = "REJECTED",
-  CANCELLED = "CANCELED",
-  EXPIRED = "EXPIRED",
+  ASSIGNING_DRIVER = 'ASSIGNING_DRIVER',
+  ON_GOING = 'ON_GOING',
+  PICKED_UP = 'PICKED_UP',
+  COMPLETED = 'COMPLETED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELED',
+  EXPIRED = 'EXPIRED',
 }
 
 export type lalamove = {
@@ -185,7 +185,7 @@ export type CashOnDelivery = {
  * scheduleAt is Date but in the end need to covert to string.
  *  Need city and serviceType to filter valid specialRequests
  */
-export type rawQuoteRequest = Omit<QuoteRequest, "scheduleAt"> & {
+export type rawQuoteRequest = Omit<QuoteRequest, 'scheduleAt'> & {
   city: City;
   scheduleAt?: Date;
 };
@@ -202,17 +202,17 @@ export type QuoteRequest = {
 };
 
 export enum Weight {
-  LESS_THAN_3KG = "LESS_THAN_3KG",
+  LESS_THAN_3KG = 'LESS_THAN_3KG',
 }
 
 export enum Category {
-  FOOD_DELIVERY = "FOOD_DELIVERY",
-  OFFICE_ITEM = "OFFICE_ITEM",
+  FOOD_DELIVERY = 'FOOD_DELIVERY',
+  OFFICE_ITEM = 'OFFICE_ITEM',
 }
 
 export enum HandlingInstructions {
-  KEEP_UPRIGHT = "KEEP_UPRIGHT",
-  FRAGILE = "FRAGILE",
+  KEEP_UPRIGHT = 'KEEP_UPRIGHT',
+  FRAGILE = 'FRAGILE',
 }
 export type Item = {
   quantity: string;
@@ -263,10 +263,10 @@ export type PriceBreakdown = {
 };
 
 export enum PODStauts {
-  PENDING = "PENDING",
-  DELIVERED = "DELIVERED",
-  SIGNED = "SIGNED",
-  FAILED = "FAILED",
+  PENDING = 'PENDING',
+  DELIVERED = 'DELIVERED',
+  SIGNED = 'SIGNED',
+  FAILED = 'FAILED',
 }
 
 export type Stop = DeliveryStopWithId & {
@@ -341,50 +341,50 @@ export type AddPriorityFeeResponse = {
 };
 
 export enum specialRequests {
-  Lalabag = "THERMAL_BAG_1",
-  LalabagSUV = "THERMAL_BAG_1",
-  HelpBuy = "PURCHASE_SERVICE_1",
-  FragileGood = "FRAGILE_GOODS",
-  ChildPurchaseService1 = "PURCHASE_SERVICE_2",
-  ChildPurchaseService2 = "PURCHASE_SERVICE_3",
-  English = "ENGLISH",
-  ChildTollPercentage1 = "TOLL_FEE_1",
-  ChildSingleSelect1 = "TOLL_FEE_1",
-  ChildMultiSelect1 = "TOLL_FEE_1",
+  Lalabag = 'THERMAL_BAG_1',
+  LalabagSUV = 'THERMAL_BAG_1',
+  HelpBuy = 'PURCHASE_SERVICE_1',
+  FragileGood = 'FRAGILE_GOODS',
+  ChildPurchaseService1 = 'PURCHASE_SERVICE_2',
+  ChildPurchaseService2 = 'PURCHASE_SERVICE_3',
+  English = 'ENGLISH',
+  ChildTollPercentage1 = 'TOLL_FEE_1',
+  ChildSingleSelect1 = 'TOLL_FEE_1',
+  ChildMultiSelect1 = 'TOLL_FEE_1',
 
-  ChildSingleSelect2 = "TOLL_FEE_2",
-  ChildMultiSelect2 = "TOLL_FEE_2",
-  ChildTollPercentage2 = "TOLL_FEE_2",
+  ChildSingleSelect2 = 'TOLL_FEE_2',
+  ChildMultiSelect2 = 'TOLL_FEE_2',
+  ChildTollPercentage2 = 'TOLL_FEE_2',
 
-  ChildTollPercentage3 = "TOLL_FEE_3",
-  ChildMultiSelect3 = "TOLL_FEE_3",
-  ChildSingleSelect3 = "TOLL_FEE_3",
+  ChildTollPercentage3 = 'TOLL_FEE_3',
+  ChildMultiSelect3 = 'TOLL_FEE_3',
+  ChildSingleSelect3 = 'TOLL_FEE_3',
 
-  ChildTollPercentage4 = "TOLL_FEE_4",
-  ChildMultiSelect4 = "TOLL_FEE_4",
-  ChildSingleSelect4 = "TOLL_FEE_4",
+  ChildTollPercentage4 = 'TOLL_FEE_4',
+  ChildMultiSelect4 = 'TOLL_FEE_4',
+  ChildSingleSelect4 = 'TOLL_FEE_4',
 
-  ChildMultiSelect5 = "TOLL_FEE_5",
-  ChildMultiSelect6 = "TOLL_FEE_6",
-  ChildMultiSelect7 = "TOLL_FEE_7",
-  ChildMultiSelect8 = "TOLL_FEE_8",
-  ChildMultiSelect9 = "TOLL_FEE_9",
-  ChildMultiSelect10 = "TOLL_FEE_10",
-  FragileGoods = "FRAGILE_GOODS",
-  PaidByRecipient = "CASH_ON_DELIVERY",
-  RequireLift = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-  thermalBag = "THERMAL_BAG_1",
-  Pets = "PETS",
-  RequireLiftWithElevator = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-  Tailgate = "TAILBOARD",
-  Refrigerator = "REFRIGERATED_UV_1",
-  Freezer = "REFRIGERATED_UV_2",
-  SelfServedHouseMoving = "MOVING_SERVICE",
-  MovingUpstairsWithElevator = "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
-  ProfessionalHouseMoving = "MOVING_SERVICE_1",
-  MovingUpstairsWithoutElevatorB1and2to3F = "MOVING_SERVICE_2",
-  MovingUpstairsWithoutElevator4to6F = "MOVING_SERVICE_3",
-  PortageFee = "MOVING_SERVICE_4",
+  ChildMultiSelect5 = 'TOLL_FEE_5',
+  ChildMultiSelect6 = 'TOLL_FEE_6',
+  ChildMultiSelect7 = 'TOLL_FEE_7',
+  ChildMultiSelect8 = 'TOLL_FEE_8',
+  ChildMultiSelect9 = 'TOLL_FEE_9',
+  ChildMultiSelect10 = 'TOLL_FEE_10',
+  FragileGoods = 'FRAGILE_GOODS',
+  PaidByRecipient = 'CASH_ON_DELIVERY',
+  RequireLift = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
+  thermalBag = 'THERMAL_BAG_1',
+  Pets = 'PETS',
+  RequireLiftWithElevator = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
+  Tailgate = 'TAILBOARD',
+  Refrigerator = 'REFRIGERATED_UV_1',
+  Freezer = 'REFRIGERATED_UV_2',
+  SelfServedHouseMoving = 'MOVING_SERVICE',
+  MovingUpstairsWithElevator = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
+  ProfessionalHouseMoving = 'MOVING_SERVICE_1',
+  MovingUpstairsWithoutElevatorB1and2to3F = 'MOVING_SERVICE_2',
+  MovingUpstairsWithoutElevator4to6F = 'MOVING_SERVICE_3',
+  PortageFee = 'MOVING_SERVICE_4',
 }
 
 const getValidSpecialRequests = ({
@@ -550,9 +550,7 @@ const getValidSpecialRequests = ({
     }
   }
 
-  return specialRequestsFromRequest.filter((req) =>
-    validSpecialRequest.includes(req)
-  );
+  return specialRequestsFromRequest.filter((req) => validSpecialRequest.includes(req));
 };
 
 export class LalamoveException extends Error {
@@ -570,13 +568,13 @@ export class LalamoveException extends Error {
 }
 
 export enum Reason {
-  DRIVER_LATE = "DRIVER_LATE",
-  DRIVER_ASKED_CHANGE = "DRIVER_ASKED_CHANGE",
-  DRIVER_UNRESPONSIVE = "DRIVER_UNRESPONSIVE",
-  DRIVER_RUDE = "DRIVER_RUDE",
+  DRIVER_LATE = 'DRIVER_LATE',
+  DRIVER_ASKED_CHANGE = 'DRIVER_ASKED_CHANGE',
+  DRIVER_UNRESPONSIVE = 'DRIVER_UNRESPONSIVE',
+  DRIVER_RUDE = 'DRIVER_RUDE',
 }
 
-const UTC_ZERO_TIMEZONE = "Europe/London";
+const UTC_ZERO_TIMEZONE = 'Europe/London';
 
 export class Lalamove {
   private apiInfo: ApiInfo; // all property related to lalamove API
@@ -584,13 +582,7 @@ export class Lalamove {
   private defaultTimeout: number;
 
   // Lalamove class constructor
-  constructor({
-    baseUrl,
-    apiKey,
-    apiSecret,
-    market,
-    defaultTimeout = 10000,
-  }: lalamove) {
+  constructor({ baseUrl, apiKey, apiSecret, market, defaultTimeout = 10000 }: lalamove) {
     this.apiInfo = {
       market,
       apiKey,
@@ -608,7 +600,7 @@ export class Lalamove {
   // do request with lalamove api
   private async request({ url, method, body = {} }: RequestInfo): Promise<any> {
     const { market, apiKey, apiSecret } = this.apiInfo;
-    const bodyStr = method == HttpMethod.GET ? "" : JSON.stringify(body);
+    const bodyStr = method == HttpMethod.GET ? '' : JSON.stringify(body);
 
     const tokenGenerate = () => {
       const timestamp = getTime(new Date());
@@ -626,37 +618,37 @@ export class Lalamove {
         case HttpMethod.GET:
           fetchResult = await superagent
             .get(`${this.baseUrl}${url}`)
-            .set("Authorization", `hmac ${tokenGenerate()}`)
-            .set("Market", market)
-            .set("X-Request-ID", uuidv4())
-            .set("Content-Type", "application/json");
+            .set('Authorization', `hmac ${tokenGenerate()}`)
+            .set('Market', market)
+            .set('X-Request-ID', uuidv4())
+            .set('Content-Type', 'application/json');
           break;
         case HttpMethod.POST:
           fetchResult = await superagent
             .post(`${this.baseUrl}${url}`)
-            .set("Authorization", `hmac ${tokenGenerate()}`)
-            .set("Market", market)
-            .set("X-Request-ID", uuidv4())
-            .set("Content-Type", "application/json")
+            .set('Authorization', `hmac ${tokenGenerate()}`)
+            .set('Market', market)
+            .set('X-Request-ID', uuidv4())
+            .set('Content-Type', 'application/json')
             .send(body);
           break;
         case HttpMethod.PUT:
           fetchResult = await superagent
             .put(`${this.baseUrl}${url}`)
             .send(body)
-            .set("Authorization", `hmac ${tokenGenerate()}`)
-            .set("Market", market)
-            .set("X-Request-ID", uuidv4())
-            .set("Content-Type", "application/json");
+            .set('Authorization', `hmac ${tokenGenerate()}`)
+            .set('Market', market)
+            .set('X-Request-ID', uuidv4())
+            .set('Content-Type', 'application/json');
           break;
         case HttpMethod.DELETE:
           fetchResult = await superagent
             .delete(`${this.baseUrl}${url}`)
             .send(body)
-            .set("Authorization", `hmac ${tokenGenerate()}`)
-            .set("Market", market)
-            .set("X-Request-ID", uuidv4())
-            .set("Content-Type", "application/json");
+            .set('Authorization', `hmac ${tokenGenerate()}`)
+            .set('Market', market)
+            .set('X-Request-ID', uuidv4())
+            .set('Content-Type', 'application/json');
           break;
       }
     } catch (error: any) {
@@ -668,7 +660,7 @@ export class Lalamove {
           status,
           description: response.text,
           body: response.body,
-        })
+        }),
       );
     }
     const responseData = fetchResult.body.data;
@@ -677,10 +669,10 @@ export class Lalamove {
   }
 
   private dateStringProcess(date: Date) {
-    const dateString = format(date, "yyyy-MM-dd", {
+    const dateString = format(date, 'yyyy-MM-dd', {
       timeZone: UTC_ZERO_TIMEZONE,
     });
-    const timeString = format(date, "HH:mm:ss", {
+    const timeString = format(date, 'HH:mm:ss', {
       timeZone: UTC_ZERO_TIMEZONE,
     });
 
@@ -725,7 +717,7 @@ export class Lalamove {
     };
 
     return this.request({
-      url: "/v3/quotations",
+      url: '/v3/quotations',
       method: HttpMethod.POST,
       body: { data: requestBody },
     });
@@ -752,7 +744,7 @@ export class Lalamove {
     };
 
     return this.request({
-      url: "/v3/orders",
+      url: '/v3/orders',
       method: HttpMethod.POST,
       body: { data: requestBody },
     });
@@ -769,10 +761,7 @@ export class Lalamove {
    *
    * This information is available starting 1 hour prior to datetime specified in scheduleAt datetime and remain accessible until the order is completed. Attempts made outside of this time window will get 403 Forbidden response.
    */
-  async driverDetail(
-    orderId: string,
-    driverId: string
-  ): Promise<DriverDetailResponse> {
+  async driverDetail(orderId: string, driverId: string): Promise<DriverDetailResponse> {
     return this.request({
       url: `/v3/orders/${orderId}/drivers/${driverId}`,
       method: HttpMethod.GET,
@@ -807,10 +796,7 @@ export class Lalamove {
     });
   }
 
-  async addPriorityFee(
-    orderId: string,
-    tips: number
-  ): Promise<AddPriorityFeeResponse> {
+  async addPriorityFee(orderId: string, tips: number): Promise<AddPriorityFeeResponse> {
     const requestBody = { priorityFee: tips.toString() };
     return this.request({
       url: `/v3/orders/${orderId}/priority-fee`,
@@ -821,7 +807,7 @@ export class Lalamove {
 
   async getCityInfo() {
     return this.request({
-      url: "/v3/cities",
+      url: '/v3/cities',
       method: HttpMethod.GET,
     });
   }
