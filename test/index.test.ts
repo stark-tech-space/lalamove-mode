@@ -48,7 +48,7 @@ describe('Lalamove Integration Test', () => {
         // legal
         SpecialRequest.FRAGILE_GOODS,
         // illegal
-        SpecialRequest.ChildMultiSelect10,
+        SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
       ],
       language: LanguagesTW.zh_TW,
       stops: [
