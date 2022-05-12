@@ -46,7 +46,7 @@ describe('Lalamove Integration Test', () => {
       serviceType: SERVICE_TYPE_MAP.TW.VAN,
       specialRequests: [
         // legal
-        SpecialRequest.PETS,
+        SpecialRequest.FRAGILE_GOODS,
         // illegal
         SpecialRequest.ChildMultiSelect10,
       ],

@@ -21,6 +21,8 @@ export enum City {
   TW_TPE = 'TW_TPE',
   TW_TXG = 'TW_TXG',
   TW_KHH = 'TW_KHH',
+  // TW_KNH = 'TW_KNH', not support yet
+  TW_TNN = 'TW_TNN',
 }
 
 export enum LanguagesTW {
@@ -79,9 +81,10 @@ export enum HttpMethod {
 
 export enum ServiceTypeTW {
   MOTORCYCLE = 'MOTORCYCLE',
-  MPV = 'MPV',
   VAN = 'VAN',
   TRUCK175 = 'TRUCK175',
+  MPV = 'SUV', // It should be SUV, but front-end have a lot MPV, that's why here is name MPV not SUV. Ideal for flowers, light furniture, and store order-in
+  TRUCK330 = 'TRUCK330',
 }
 
 export enum LalamoveOrderStatus {
@@ -408,47 +411,54 @@ export type AddPriorityFeeResponse = {
 };
 
 export enum SpecialRequest {
+  EXTRA_WAITING_TIME = 'PARENT_EXTRA_TIME',
+  EXTRA_WAITING_1HR = 'WAITING_TIME_1',
+  EXTRA_WAITING_2HR = 'WAITING_TIME_2',
   LALABAG = 'THERMAL_BAG_1',
   HELP_BUY = 'PURCHASE_SERVICE_1',
   FRAGILE_GOODS = 'FRAGILE_GOODS',
   CHILD_PURCHASE_SERVICE_1 = 'PURCHASE_SERVICE_2',
   CHILD_PURCHASE_SERVICE_2 = 'PURCHASE_SERVICE_3',
-  ENGLISH = 'ENGLISH',
-  ChildTollPercentage1 = 'TOLL_FEE_1',
-  ChildSingleSelect1 = 'TOLL_FEE_1',
-  ChildMultiSelect1 = 'TOLL_FEE_1',
-
-  ChildSingleSelect2 = 'TOLL_FEE_2',
-  ChildMultiSelect2 = 'TOLL_FEE_2',
-  ChildTollPercentage2 = 'TOLL_FEE_2',
-
-  ChildTollPercentage3 = 'TOLL_FEE_3',
-  ChildMultiSelect3 = 'TOLL_FEE_3',
-  ChildSingleSelect3 = 'TOLL_FEE_3',
-
-  ChildTollPercentage4 = 'TOLL_FEE_4',
-  ChildMultiSelect4 = 'TOLL_FEE_4',
-  ChildSingleSelect4 = 'TOLL_FEE_4',
-
-  ChildMultiSelect5 = 'TOLL_FEE_5',
-  ChildMultiSelect6 = 'TOLL_FEE_6',
-  ChildMultiSelect7 = 'TOLL_FEE_7',
-  ChildMultiSelect8 = 'TOLL_FEE_8',
-  ChildMultiSelect9 = 'TOLL_FEE_9',
-  ChildMultiSelect10 = 'TOLL_FEE_10',
+  MOVING_UPSTAIRS = 'PARENT_MOVING_SERVICE',
   PAID_BY_RECIPIENT = 'CASH_ON_DELIVERY',
   REQUIRE_LIFT = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
   THERMAL_BAG = 'THERMAL_BAG_1',
-  PETS = 'PETS',
 
   TAILBOARD = 'TAILBOARD',
   REFRIGERATOR = 'REFRIGERATED_UV_1',
   FREEZER = 'REFRIGERATED_UV_2',
   SELF_SERVED_HOUSE_MOVING = 'MOVING_SERVICE',
   PROFESSIONAL_HOUSE_MOVING = 'MOVING_SERVICE_1',
-  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F = 'MOVING_SERVICE_2',
+  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F = 'MOVING_SERVICE_2',
   MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F = 'MOVING_SERVICE_3',
   PORTAGE_FEE = 'MOVING_SERVICE_4',
+
+  // not support yet: (in dev test environment only)
+
+  // ENGLISH = 'ENGLISH',
+  // PETS = 'PETS',
+  // ChildTollPercentage1 = 'TOLL_FEE_1',
+  // ChildSingleSelect1 = 'TOLL_FEE_1',
+  // ChildMultiSelect1 = 'TOLL_FEE_1',
+
+  // ChildSingleSelect2 = 'TOLL_FEE_2',
+  // ChildMultiSelect2 = 'TOLL_FEE_2',
+  // ChildTollPercentage2 = 'TOLL_FEE_2',
+
+  // ChildTollPercentage3 = 'TOLL_FEE_3',
+  // ChildMultiSelect3 = 'TOLL_FEE_3',
+  // ChildSingleSelect3 = 'TOLL_FEE_3',
+
+  // ChildTollPercentage4 = 'TOLL_FEE_4',
+  // ChildMultiSelect4 = 'TOLL_FEE_4',
+  // ChildSingleSelect4 = 'TOLL_FEE_4',
+
+  // ChildMultiSelect5 = 'TOLL_FEE_5',
+  // ChildMultiSelect6 = 'TOLL_FEE_6',
+  // ChildMultiSelect7 = 'TOLL_FEE_7',
+  // ChildMultiSelect8 = 'TOLL_FEE_8',
+  // ChildMultiSelect9 = 'TOLL_FEE_9',
+  // ChildMultiSelect10 = 'TOLL_FEE_10',
 }
 
 const getValidSpecialRequests = ({
@@ -469,32 +479,22 @@ const getValidSpecialRequests = ({
             SpecialRequest.LALABAG,
             SpecialRequest.HELP_BUY,
             SpecialRequest.FRAGILE_GOODS,
-            SpecialRequest.CHILD_PURCHASE_SERVICE_1,
-            SpecialRequest.CHILD_PURCHASE_SERVICE_2,
-            SpecialRequest.ENGLISH,
-            SpecialRequest.ChildSingleSelect1,
-            SpecialRequest.ChildSingleSelect2,
-            SpecialRequest.ChildSingleSelect3,
+            SpecialRequest.PAID_BY_RECIPIENT,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequest.FRAGILE_GOODS,
-            SpecialRequest.PAID_BY_RECIPIENT,
-            SpecialRequest.HELP_BUY,
             SpecialRequest.REQUIRE_LIFT,
-            SpecialRequest.LALABAG,
-            SpecialRequest.ChildMultiSelect1,
-            SpecialRequest.ChildMultiSelect2,
-            SpecialRequest.ChildMultiSelect3,
-            SpecialRequest.ChildMultiSelect4,
-            SpecialRequest.ChildMultiSelect5,
-            SpecialRequest.ChildMultiSelect6,
-            SpecialRequest.ChildMultiSelect7,
-            SpecialRequest.ChildMultiSelect8,
-            SpecialRequest.ChildMultiSelect9,
-            SpecialRequest.ChildMultiSelect10,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
           ];
           break;
         }
@@ -505,14 +505,33 @@ const getValidSpecialRequests = ({
             SpecialRequest.HELP_BUY,
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.THERMAL_BAG,
-            SpecialRequest.PETS,
-            SpecialRequest.ChildSingleSelect1,
-            SpecialRequest.ChildSingleSelect2,
-            SpecialRequest.ChildSingleSelect3,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
           ];
           break;
         }
-        case SERVICE_TYPE_MAP.TW.TRUCK175: {
+        case SERVICE_TYPE_MAP.TW.TRUCK330: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.FREEZER,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+            SpecialRequest.MOVING_UPSTAIRS,
+          ];
           break;
         }
       }
@@ -531,10 +550,16 @@ const getValidSpecialRequests = ({
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequest.FRAGILE_GOODS,
-            SpecialRequest.PAID_BY_RECIPIENT,
-            SpecialRequest.HELP_BUY,
             SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
           ];
           break;
         }
@@ -549,17 +574,35 @@ const getValidSpecialRequests = ({
         }
         case SERVICE_TYPE_MAP.TW.TRUCK175: {
           validSpecialRequest = [
-            SpecialRequest.FRAGILE_GOODS,
             SpecialRequest.PAID_BY_RECIPIENT,
-            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
             SpecialRequest.REQUIRE_LIFT,
-            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
             SpecialRequest.TAILBOARD,
             SpecialRequest.REFRIGERATOR,
             SpecialRequest.FREEZER,
             SpecialRequest.PORTAGE_FEE,
-            SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
-            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
           ];
           break;
         }
@@ -579,19 +622,31 @@ const getValidSpecialRequests = ({
         }
         case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            SpecialRequest.HELP_BUY,
-            SpecialRequest.FRAGILE_GOODS,
-            SpecialRequest.PAID_BY_RECIPIENT,
             SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
           ];
           break;
         }
         case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
             SpecialRequest.HELP_BUY,
             SpecialRequest.FRAGILE_GOODS,
             SpecialRequest.PAID_BY_RECIPIENT,
             SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
           ];
           break;
         }
@@ -599,18 +654,86 @@ const getValidSpecialRequests = ({
           validSpecialRequest = [
             SpecialRequest.PAID_BY_RECIPIENT,
             SpecialRequest.FRAGILE_GOODS,
-            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
             SpecialRequest.REQUIRE_LIFT,
             SpecialRequest.TAILBOARD,
             SpecialRequest.REFRIGERATOR,
             SpecialRequest.FREEZER,
             SpecialRequest.PORTAGE_FEE,
             SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            // TODO: 這裡的SELF_SERVED_HOUSE_MOVING對照到應該是MOVING_SERVICE_2而不是1，其餘的都是對照到1
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
           ];
           break;
         }
       }
       break;
+    }
+    case City.TW_TNN: {
+      switch (serviceType) {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.LALABAG,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.MPV: {
+          validSpecialRequest = [
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+      }
     }
   }
 
