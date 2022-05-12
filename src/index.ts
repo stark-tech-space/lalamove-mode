@@ -7,7 +7,7 @@ import * as superagent from 'superagent';
 export enum Market {
   TAIWAN = 'TW',
   BRASIL = 'BR',
-  Hong_Kong = 'HK',
+  HONGKONG = 'HK',
   INDONESIA = 'ID',
   MALAYSIA = 'MY',
   MEXICO = 'MX',
@@ -110,7 +110,7 @@ export type ApiInfo = {
 
 export type Languages = {
   [Market.TAIWAN]: LanguagesTW;
-  [Market.Hong_Kong]: LanguagesHK;
+  [Market.HONGKONG]: LanguagesHK;
   [Market.BRASIL]: LanguagesBR;
   [Market.THAILAND]: LanguagesTH;
   [Market.INDONESIA]: LanguagesID;
@@ -128,10 +128,10 @@ export type RequestInfo = {
 };
 
 // TODO: other market serviceType
-export const serviceTypeMap = {
+export const SERVICE_TYPE_MAP = {
   [Market.TAIWAN]: ServiceTypeTW,
   [Market.BRASIL]: ServiceTypeTW,
-  [Market.Hong_Kong]: ServiceTypeTW,
+  [Market.HONGKONG]: ServiceTypeTW,
   [Market.INDONESIA]: ServiceTypeTW,
   [Market.MALAYSIA]: ServiceTypeTW,
   [Market.MEXICO]: ServiceTypeTW,
@@ -183,9 +183,9 @@ export type CashOnDelivery = {
 
 /**
  * scheduleAt is Date but in the end need to covert to string.
- *  Need city and serviceType to filter valid specialRequests
+ *  Need city and serviceType to filter valid SpecialRequests
  */
-export type rawQuoteRequest = Omit<QuoteRequest, 'scheduleAt'> & {
+export type RawQuoteRequest = Omit<QuoteRequest, 'scheduleAt'> & {
   city: City;
   scheduleAt?: Date;
 };
@@ -195,7 +195,7 @@ export type QuoteRequest = {
   language: Languages[Market];
   stops: Array<DeliveryStop>;
   scheduleAt?: string; // UTC ISO8601 format
-  specialRequests?: Array<specialRequests>;
+  SpecialRequests?: Array<SpecialRequests>;
   isRouteOptimized?: boolean; // multiple drop off
   item?: Item;
   cashOnDelivery?: CashOnDelivery;
@@ -203,17 +203,39 @@ export type QuoteRequest = {
 
 export enum Weight {
   LESS_THAN_3KG = 'LESS_THAN_3KG',
+  W1KG_TO_1KG = '0-1',
+  W1KG_TO_2KG = '1-2',
+  W2KG_TO_3KG = '2-3',
+  W3KG_TO_4KG = '3-4',
+  W4KG_TO_5KG = '4-5',
+  W5KG_TO_6KG = '5-6',
 }
+
+export type WeightTW = Exclude<Weight, Weight.LESS_THAN_3KG>;
 
 export enum Category {
   FOOD_DELIVERY = 'FOOD_DELIVERY',
   OFFICE_ITEM = 'OFFICE_ITEM',
+  Spaghetti = 'Spaghetti',
+  Hotdog = 'Hotdog',
+  Burger = 'Burger',
+  FriedChicken = 'Fried Chicken',
+  Chicharon = 'Chicharon',
+  Tapa = 'Tapa',
 }
+
+export type CategoryTW = Exclude<Category, Category.FOOD_DELIVERY | Category.OFFICE_ITEM>;
 
 export enum HandlingInstructions {
   KEEP_UPRIGHT = 'KEEP_UPRIGHT',
-  FRAGILE = 'FRAGILE',
+  FRAGILE = 'Fragile',
+  KeepDry = 'Keep dry',
 }
+export type HandlingInstructionsTW = Extract<
+  HandlingInstructions,
+  HandlingInstructions.FRAGILE | HandlingInstructions.KeepDry
+>;
+
 export type Item = {
   quantity: string;
   weight: Weight;
@@ -228,6 +250,16 @@ export type DeliveryDetails = {
   remark?: string;
 };
 
+/**
+ * @param quotationId use getQuote to get quotationId in response body
+ * @param sender This information will be displayed to the driver.
+ * @param recipients An array of DeliveryDetails, containing recipient contact and instruction per stop
+ * @param isRecipientSMSEnabled (optional) Send delivery updates via SMS to THE recipient, or the recipient of the LAST STOP for multi-stop orders once the order has been picked-up by the driver.
+Default to true
+ * @param isPODEnabled Request driver to carry out "Proof Of Delivery" for all stops in the order. Default to false
+ * @param partner (optional) Specify Partner's name for effective tracking and organization. This field is only applicable for channel partners. Please contact partner.support@lalamove.com if you would like to request for your Partner ID
+ * @param metadata (optional) An object with key-value pairs containing client-specific information
+ */
 export type OrderPlacementRequest = {
   quotationId: string;
   sender: Contact & {
@@ -240,17 +272,36 @@ export type OrderPlacementRequest = {
   metadata?: Record<string, any>;
 };
 
+/**
+ * @param quotationId need to send for place order request
+ * @param scheduleAt Pick up time in UTC timezone and ISO 8601 format
+ * @param priceBreakdown
+ * @param expiresAt display date string. (5 mins)
+ * @param item optional but recommend to have
+ * @param SpecialRequests optional
+ */
 export type QuoteResponse = {
   quotationId: string;
   scheduleAt: string;
   serviceType: ServiceTypeTW;
-  specialRequests?: Array<specialRequests>;
+  SpecialRequests?: Array<SpecialRequests>;
   expiresAt: string; // 5 mins
   priceBreakdown: PriceBreakdown;
   stops: Array<Stop>;
   item?: Item;
 };
 
+/**
+ * Breakdown of the delivery price
+ * @param base
+ * @param extraMileage
+ * @param surcharge
+ * @param priorityFee optional
+ * @param total
+ * @param totalBeforeOptimization
+ * @param totalExcludePriorityFee
+ * @param currency ex: THB
+ */
 export type PriceBreakdown = {
   base: string;
   extraMileage: string;
@@ -262,6 +313,13 @@ export type PriceBreakdown = {
   currency: string;
 };
 
+/**
+ * POD = poof of delivery
+ * @param PENDING The driver hasn't completed the delivery to the stop yet
+ * @param DELIVERED The driver has completed the order and has taken a photo at the stop
+ * @param SIGNED The driver has completed the order and received recipient's signature
+ * @param FAILED The driver couldn't complete the delivery to the stop
+ */
 export enum PODStauts {
   PENDING = 'PENDING',
   DELIVERED = 'DELIVERED',
@@ -307,6 +365,13 @@ export type OrderDetailResponse = {
   metadata: Record<string, any>;
 };
 
+/**
+ * @param driverId <LALAMOVE_DRIVER_ID>
+ * @param name Name of the driver
+ * @param phone Phone number of the driver. To be encrypted in the future for privacy
+ * @param plateNumber License plate of the driver's vehicle. First two digits and the last digit is masked with asterisk for privacy
+ * @param coordinates Last updated location of the driver
+ */
 export type DriverDetailResponse = {
   driverId: string;
   name: string;
@@ -340,14 +405,13 @@ export type AddPriorityFeeResponse = {
   stops: Array<Stop>;
 };
 
-export enum specialRequests {
-  Lalabag = 'THERMAL_BAG_1',
-  LalabagSUV = 'THERMAL_BAG_1',
-  HelpBuy = 'PURCHASE_SERVICE_1',
-  FragileGood = 'FRAGILE_GOODS',
-  ChildPurchaseService1 = 'PURCHASE_SERVICE_2',
-  ChildPurchaseService2 = 'PURCHASE_SERVICE_3',
-  English = 'ENGLISH',
+export enum SpecialRequests {
+  LALABAG = 'THERMAL_BAG_1',
+  HELP_BUY = 'PURCHASE_SERVICE_1',
+  FRAGILE_GOODS = 'FRAGILE_GOODS',
+  CHILD_PURCHASE_SERVICE_1 = 'PURCHASE_SERVICE_2',
+  CHILD_PURCHASE_SERVICE_2 = 'PURCHASE_SERVICE_3',
+  ENGLISH = 'ENGLISH',
   ChildTollPercentage1 = 'TOLL_FEE_1',
   ChildSingleSelect1 = 'TOLL_FEE_1',
   ChildMultiSelect1 = 'TOLL_FEE_1',
@@ -370,21 +434,19 @@ export enum specialRequests {
   ChildMultiSelect8 = 'TOLL_FEE_8',
   ChildMultiSelect9 = 'TOLL_FEE_9',
   ChildMultiSelect10 = 'TOLL_FEE_10',
-  FragileGoods = 'FRAGILE_GOODS',
-  PaidByRecipient = 'CASH_ON_DELIVERY',
-  RequireLift = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
-  thermalBag = 'THERMAL_BAG_1',
-  Pets = 'PETS',
-  RequireLiftWithElevator = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
-  Tailgate = 'TAILBOARD',
-  Refrigerator = 'REFRIGERATED_UV_1',
-  Freezer = 'REFRIGERATED_UV_2',
-  SelfServedHouseMoving = 'MOVING_SERVICE',
-  MovingUpstairsWithElevator = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
-  ProfessionalHouseMoving = 'MOVING_SERVICE_1',
-  MovingUpstairsWithoutElevatorB1and2to3F = 'MOVING_SERVICE_2',
-  MovingUpstairsWithoutElevator4to6F = 'MOVING_SERVICE_3',
-  PortageFee = 'MOVING_SERVICE_4',
+  PAID_BY_RECIPIENT = 'CASH_ON_DELIVERY',
+  REQUIRE_LIFT = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
+  THERMAL_BAG = 'THERMAL_BAG_1',
+  PETS = 'PETS',
+
+  TAILBOARD = 'TAILBOARD',
+  REFRIGERATOR = 'REFRIGERATED_UV_1',
+  FREEZER = 'REFRIGERATED_UV_2',
+  SELF_SERVED_HOUSE_MOVING = 'MOVING_SERVICE',
+  PROFESSIONAL_HOUSE_MOVING = 'MOVING_SERVICE_1',
+  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F = 'MOVING_SERVICE_2',
+  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F = 'MOVING_SERVICE_3',
+  PORTAGE_FEE = 'MOVING_SERVICE_4',
 }
 
 const getValidSpecialRequests = ({
@@ -394,61 +456,61 @@ const getValidSpecialRequests = ({
 }: {
   serviceType: ServiceType;
   city: City;
-  specialRequestsFromRequest: Array<specialRequests>;
+  specialRequestsFromRequest: Array<SpecialRequests>;
 }) => {
-  let validSpecialRequest: Array<specialRequests> = [];
+  let validSpecialRequest: Array<SpecialRequests> = [];
   switch (city) {
     case City.TW_TPE: {
       switch (serviceType) {
-        case serviceTypeMap.TW.MOTORCYCLE: {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            specialRequests.Lalabag,
-            specialRequests.HelpBuy,
-            specialRequests.FragileGood,
-            specialRequests.ChildPurchaseService1,
-            specialRequests.ChildPurchaseService2,
-            specialRequests.English,
-            specialRequests.ChildSingleSelect1,
-            specialRequests.ChildSingleSelect2,
-            specialRequests.ChildSingleSelect3,
+            SpecialRequests.LALABAG,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.CHILD_PURCHASE_SERVICE_1,
+            SpecialRequests.CHILD_PURCHASE_SERVICE_2,
+            SpecialRequests.ENGLISH,
+            SpecialRequests.ChildSingleSelect1,
+            SpecialRequests.ChildSingleSelect2,
+            SpecialRequests.ChildSingleSelect3,
           ];
           break;
         }
-        case serviceTypeMap.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.HelpBuy,
-            specialRequests.RequireLift,
-            specialRequests.LalabagSUV,
-            specialRequests.ChildMultiSelect1,
-            specialRequests.ChildMultiSelect2,
-            specialRequests.ChildMultiSelect3,
-            specialRequests.ChildMultiSelect4,
-            specialRequests.ChildMultiSelect5,
-            specialRequests.ChildMultiSelect6,
-            specialRequests.ChildMultiSelect7,
-            specialRequests.ChildMultiSelect8,
-            specialRequests.ChildMultiSelect9,
-            specialRequests.ChildMultiSelect10,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequests.LALABAG,
+            SpecialRequests.ChildMultiSelect1,
+            SpecialRequests.ChildMultiSelect2,
+            SpecialRequests.ChildMultiSelect3,
+            SpecialRequests.ChildMultiSelect4,
+            SpecialRequests.ChildMultiSelect5,
+            SpecialRequests.ChildMultiSelect6,
+            SpecialRequests.ChildMultiSelect7,
+            SpecialRequests.ChildMultiSelect8,
+            SpecialRequests.ChildMultiSelect9,
+            SpecialRequests.ChildMultiSelect10,
           ];
           break;
         }
-        case serviceTypeMap.TW.VAN: {
+        case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.HelpBuy,
-            specialRequests.RequireLift,
-            specialRequests.thermalBag,
-            specialRequests.Pets,
-            specialRequests.ChildSingleSelect1,
-            specialRequests.ChildSingleSelect2,
-            specialRequests.ChildSingleSelect3,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequests.THERMAL_BAG,
+            SpecialRequests.PETS,
+            SpecialRequests.ChildSingleSelect1,
+            SpecialRequests.ChildSingleSelect2,
+            SpecialRequests.ChildSingleSelect3,
           ];
           break;
         }
-        case serviceTypeMap.TW.TRUCK175: {
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
           break;
         }
       }
@@ -456,46 +518,46 @@ const getValidSpecialRequests = ({
     }
     case City.TW_TXG: {
       switch (serviceType) {
-        case serviceTypeMap.TW.MOTORCYCLE: {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            specialRequests.Lalabag,
-            specialRequests.HelpBuy,
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
+            SpecialRequests.LALABAG,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
           ];
           break;
         }
-        case serviceTypeMap.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.HelpBuy,
-            specialRequests.RequireLift,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.REQUIRE_LIFT,
           ];
           break;
         }
-        case serviceTypeMap.TW.VAN: {
+        case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.HelpBuy,
-            specialRequests.RequireLift,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.REQUIRE_LIFT,
           ];
           break;
         }
-        case serviceTypeMap.TW.TRUCK175: {
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
           validSpecialRequest = [
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.SelfServedHouseMoving,
-            specialRequests.MovingUpstairsWithElevator,
-            specialRequests.MovingUpstairsWithoutElevator4to6F,
-            specialRequests.Tailgate,
-            specialRequests.Refrigerator,
-            specialRequests.Freezer,
-            specialRequests.PortageFee,
-            specialRequests.ProfessionalHouseMoving,
-            specialRequests.MovingUpstairsWithoutElevatorB1and2to3F,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequests.TAILBOARD,
+            SpecialRequests.REFRIGERATOR,
+            SpecialRequests.FREEZER,
+            SpecialRequests.PORTAGE_FEE,
+            SpecialRequests.PROFESSIONAL_HOUSE_MOVING,
+            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
           ];
           break;
         }
@@ -504,44 +566,44 @@ const getValidSpecialRequests = ({
     }
     case City.TW_KHH: {
       switch (serviceType) {
-        case serviceTypeMap.TW.MOTORCYCLE: {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
           validSpecialRequest = [
-            specialRequests.HelpBuy,
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.Lalabag,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.LALABAG,
           ];
           break;
         }
-        case serviceTypeMap.TW.MPV: {
+        case SERVICE_TYPE_MAP.TW.MPV: {
           validSpecialRequest = [
-            specialRequests.HelpBuy,
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.RequireLift,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.REQUIRE_LIFT,
           ];
           break;
         }
-        case serviceTypeMap.TW.VAN: {
+        case SERVICE_TYPE_MAP.TW.VAN: {
           validSpecialRequest = [
-            specialRequests.HelpBuy,
-            specialRequests.FragileGood,
-            specialRequests.PaidByRecipient,
-            specialRequests.RequireLift,
+            SpecialRequests.HELP_BUY,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.REQUIRE_LIFT,
           ];
           break;
         }
-        case serviceTypeMap.TW.TRUCK175: {
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
           validSpecialRequest = [
-            specialRequests.PaidByRecipient,
-            specialRequests.FragileGood,
-            specialRequests.MovingUpstairsWithoutElevatorB1and2to3F,
-            specialRequests.RequireLiftWithElevator,
-            specialRequests.Tailgate,
-            specialRequests.Refrigerator,
-            specialRequests.Freezer,
-            specialRequests.PortageFee,
-            specialRequests.MovingUpstairsWithoutElevator4to6F,
+            SpecialRequests.PAID_BY_RECIPIENT,
+            SpecialRequests.FRAGILE_GOODS,
+            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_2_TO_3F,
+            SpecialRequests.REQUIRE_LIFT,
+            SpecialRequests.TAILBOARD,
+            SpecialRequests.REFRIGERATOR,
+            SpecialRequests.FREEZER,
+            SpecialRequests.PORTAGE_FEE,
+            SpecialRequests.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
           ];
           break;
         }
@@ -692,16 +754,16 @@ export class Lalamove {
     language,
     stops,
     scheduleAt,
-    specialRequests = [],
+    SpecialRequests = [],
     isRouteOptimized,
     item,
     cashOnDelivery,
     city,
-  }: rawQuoteRequest): Promise<QuoteResponse> {
+  }: RawQuoteRequest): Promise<QuoteResponse> {
     const validSpecialRequests = getValidSpecialRequests({
       city,
       serviceType,
-      specialRequestsFromRequest: specialRequests,
+      specialRequestsFromRequest: SpecialRequests,
     });
 
     // create request body
@@ -709,7 +771,7 @@ export class Lalamove {
       serviceType,
       language,
       stops,
-      specialRequests: validSpecialRequests,
+      SpecialRequests: validSpecialRequests,
       isRouteOptimized,
       item,
       cashOnDelivery,

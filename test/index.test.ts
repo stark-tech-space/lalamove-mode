@@ -12,8 +12,8 @@ import {
   OrderPlacementResponse,
   QuoteResponse,
   Reason,
-  serviceTypeMap,
-  specialRequests,
+  SERVICE_TYPE_MAP,
+  SpecialRequests,
   Weight,
 } from '../src';
 import addMinutes from 'date-fns/fp/addMinutes';
@@ -43,12 +43,12 @@ describe('Lalamove Integration Test', () => {
 
     quotation = await lalamove.getQuote({
       city: City.TW_TPE,
-      serviceType: serviceTypeMap.TW.VAN,
-      specialRequests: [
+      serviceType: SERVICE_TYPE_MAP.TW.VAN,
+      SpecialRequests: [
         // legal
-        specialRequests.Pets,
+        SpecialRequests.PETS,
         // illegal
-        specialRequests.ChildMultiSelect10,
+        SpecialRequests.ChildMultiSelect10,
       ],
       language: LanguagesTW.zh_TW,
       stops: [
@@ -76,13 +76,13 @@ describe('Lalamove Integration Test', () => {
       isRouteOptimized: true,
     });
 
-    // console.log(quotation!.specialRequests);
+    // console.log(quotation!.SpecialRequests);
 
     expect(quotation).toHaveProperty('quotationId');
     expect(quotation).toHaveProperty('scheduleAt');
     expect(quotation).toHaveProperty('expiresAt');
     expect(quotation).toHaveProperty('serviceType');
-    expect(quotation).toHaveProperty('specialRequests');
+    expect(quotation).toHaveProperty('SpecialRequests');
     expect(quotation).toHaveProperty('language');
     expect(quotation).toHaveProperty('stops');
     expect(quotation).toHaveProperty('isRouteOptimized');
