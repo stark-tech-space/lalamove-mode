@@ -173,6 +173,13 @@ export type DeliveryStop = {
   address: string;
 };
 
+export type rawDeliveryStop = Omit<DeliveryStop, 'coordinates'> & {
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+};
+
 export type DeliveryStopWithId = DeliveryStop & {
   stopId: string;
 };
@@ -185,9 +192,10 @@ export type CashOnDelivery = {
  * scheduleAt is Date but in the end need to covert to string.
  *  Need city and serviceType to filter valid SpecialRequest
  */
-export type RawQuoteRequest = Omit<QuoteRequest, 'scheduleAt'> & {
+export type RawQuoteRequest = Omit<QuoteRequest, 'scheduleAt' | 'stops'> & {
   city: City;
   scheduleAt?: Date;
+  stops: Array<rawDeliveryStop>;
 };
 
 export type QuoteRequest = {
@@ -659,6 +667,20 @@ export class Lalamove {
     return CryptoJS.HmacSHA256(rawForSignature, apiSecret).toString();
   }
 
+  private stopTransform(stops: rawDeliveryStop): DeliveryStop {
+    let {
+      coordinates: { lng, lat },
+    } = stops;
+
+    return {
+      ...stops,
+      coordinates: {
+        lat: lat.toString(),
+        lng: lng.toString(),
+      },
+    };
+  }
+
   // do request with lalamove api
   private async request({ url, method, body = {} }: RequestInfo): Promise<any> {
     const { market, apiKey, apiSecret } = this.apiInfo;
@@ -770,7 +792,7 @@ export class Lalamove {
     const requestBody: QuoteRequest = {
       serviceType,
       language,
-      stops,
+      stops: stops.map((stop) => this.stopTransform(stop)),
       specialRequests: validSpecialRequests,
       isRouteOptimized,
       item,
