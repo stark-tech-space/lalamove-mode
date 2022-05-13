@@ -1,0 +1,405 @@
+[
+  {
+    "locode": "TW KHH",
+    "name": "Kaohsiung",
+    "services": [
+      {
+        "key": "MOTORCYCLE",
+        "description": "Ideal for groceries, food, documents, small parcels",
+        "dimensions": {
+          "length": { "value": "0.3", "unit": "m" },
+          "width": { "value": "0.6", "unit": "m" },
+          "height": { "value": "0.4", "unit": "m" }
+        },
+        "load": { "value": "20", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "THERMAL_BAG_1", "description": "Lalabag" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "MPV",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "200", "unit": "kg" },
+        "specialRequests": [
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT", "description": "Moving goods upstair" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "TRUCK175",
+        "description": "Ideal for house moving, banner ads, large merchandises",
+        "dimensions": {
+          "length": { "value": "2", "unit": "m" },
+          "width": { "value": "1.2", "unit": "m" },
+          "height": { "value": "1.2", "unit": "m" }
+        },
+        "load": { "value": "500", "unit": "kg" },
+        "specialRequests": [
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving upstairs with elevator"
+          },
+          {
+            "name": "MOVING_SERVICE_2",
+            "description": "Moving upstairs without elevator (B1&2-3F)"
+          },
+          { "name": "TAILBOARD", "description": "Tailgate" },
+          { "name": "REFRIGERATED_UV_1", "description": "Refrigerator (0°C - 7°C)" },
+          { "name": "REFRIGERATED_UV_2", "description": "Freezer (below -15°C)" },
+          { "name": "MOVING_SERVICE_4", "description": "Portage fee (Over 20 items, Max 20KG)" },
+          { "name": "MOVING_SERVICE_3", "description": "Moving upstairs without elevator (4-6F)" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "VAN",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1.5", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "300", "unit": "kg" },
+        "specialRequests": [
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT", "description": "Moving goods upstair" }
+        ],
+        "deliveryItemSpecification": {}
+      }
+    ]
+  },
+  {
+    "locode": "TW TNN",
+    "name": "Tainan",
+    "services": [
+      {
+        "key": "MOTORCYCLE",
+        "description": "Ideal for groceries, food, documents, small parcels",
+        "dimensions": {
+          "length": { "value": "0.3", "unit": "m" },
+          "width": { "value": "0.4", "unit": "m" },
+          "height": { "value": "0.6", "unit": "m" }
+        },
+        "load": { "value": "20", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "PURCHASE_SERVICE_1", "description": "HelpBuy" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "THERMAL_BAG_1", "description": "Lalabag" },
+          { "name": "MOVING_SERVICE", "description": "Self-served House Moving" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "MPV",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "200", "unit": "kg" },
+        "specialRequests": [
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "PURCHASE_SERVICE_1", "description": "HelpBuy" },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving upstairs with elevator"
+          }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "VAN",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1.5", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "300", "unit": "kg" },
+        "specialRequests": [
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving upstairs with elevator"
+          }
+        ],
+        "deliveryItemSpecification": {}
+      }
+    ]
+  },
+  {
+    "locode": "TW TPE",
+    "name": "Taipei",
+    "services": [
+      {
+        "key": "MOTORCYCLE",
+        "description": "Ideal for groceries, food, documents, small parcels",
+        "dimensions": {
+          "length": { "value": "0.3", "unit": "m" },
+          "width": { "value": "0.6", "unit": "m" },
+          "height": { "value": "0.4", "unit": "m" }
+        },
+        "load": { "value": "20", "unit": "kg" },
+        "specialRequests": [
+          { "name": "THERMAL_BAG_1", "description": "Lalabag" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "PURCHASE_SERVICE_2",
+            "description": "Child purchase service for Taipei with long name 1"
+          },
+          {
+            "name": "PURCHASE_SERVICE_3",
+            "description": "Child purchase service for Taipei with long name 2"
+          },
+          { "name": "PETS", "description": "Pets" },
+          { "name": "ENGLISH", "description": "English" },
+          { "name": "TOLL_FEE_1", "description": "Child single select service 1" },
+          { "name": "TOLL_FEE_2", "description": "Child single select service 2" },
+          { "name": "TOLL_FEE_3", "description": "Child single select service 3" }
+        ],
+        "deliveryItemSpecification": {
+          "weight": ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6"],
+          "categories": ["Spaghetti", "Hotdog", "Burger", "Fried Chicken", "Chicharon", "Tapa"],
+          "handlingInstructions": ["Fragile", "Keep dry"]
+        }
+      },
+      {
+        "key": "MPV",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "200", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "MOVING_SERVICE", "description": "Moving goods upstair (Require lift)" },
+          { "name": "THERMAL_BAG_1", "description": "Lalabag SUV" },
+          { "name": "PURCHASE_SERVICE_2", "description": "Child sub service 1" },
+          { "name": "TOLL_FEE_1", "description": "Child multi select service 1" },
+          { "name": "TOLL_FEE_2", "description": "Child multi select service 2" },
+          { "name": "TOLL_FEE_3", "description": "Child multi select service 3" },
+          { "name": "TOLL_FEE_4", "description": "Child multi select service 4" },
+          { "name": "TOLL_FEE_5", "description": "Child multi select service 5" },
+          { "name": "TOLL_FEE_6", "description": "Child multi select service 6" },
+          { "name": "TOLL_FEE_7", "description": "Child multi select service 7" },
+          { "name": "TOLL_FEE_8", "description": "Child multi select service 8" },
+          { "name": "TOLL_FEE_9", "description": "Child multi select service 9" },
+          { "name": "TOLL_FEE_10", "description": "Child multi select service 10" }
+        ],
+        "deliveryItemSpecification": {
+          "weight": ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6"],
+          "categories": ["Spaghetti", "Hotdog", "Burger", "Fried Chicken", "Chicharon", "Tapa"]
+        }
+      },
+      {
+        "key": "TRUCK330",
+        "description": "Ideal for house moving, banner ads, large merchandises",
+        "dimensions": {
+          "length": { "value": "2", "unit": "m" },
+          "width": { "value": "1.2", "unit": "m" },
+          "height": { "value": "1.2", "unit": "m" }
+        },
+        "load": { "value": "500", "unit": "kg" },
+        "specialRequests": [
+          { "name": "MOVING_SERVICE", "description": "Self-served House Moving" },
+          { "name": "MOVING_SERVICE_1", "description": "Professional House Moving" },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving goods upstair (Require lift)"
+          },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "TAILBOARD", "description": "Tailgate" },
+          { "name": "REFRIGERATED_UV_1", "description": "Refrigerator (0°C - 7°C)" },
+          { "name": "REFRIGERATED_UV_2", "description": "Freezer (below -15°C)" },
+          { "name": "MOVING_SERVICE_4", "description": "Portage fee (Over 20 items, Max 20KG)" },
+          {
+            "name": "MOVING_SERVICE_2",
+            "description": "Moving upstairs without elevator (B1&amp;2-3F)"
+          },
+          { "name": "MOVING_SERVICE_3", "description": "Moving upstairs without elevator (4-6F)" },
+          { "name": "TOLL_FEE_1", "description": "Child 1" },
+          { "name": "TOLL_FEE_2", "description": "Child 2" },
+          { "name": "TOLL_FEE_3", "description": "Child 3" }
+        ],
+        "deliveryItemSpecification": {
+          "weight": ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6"],
+          "categories": ["Spaghetti", "Hotdog", "Burger", "Fried Chicken", "Chicharon", "Tapa"]
+        }
+      },
+      {
+        "key": "VAN",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1.5", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "300", "unit": "kg" },
+        "specialRequests": [
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving goods upstair (Require lift)"
+          },
+          { "name": "PURCHASE_SERVICE_1", "description": "HelpBuy (Max $2000)" },
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "THERMAL_BAG_1", "description": "thermal bag 12" },
+          { "name": "PETS", "description": "Pets" },
+          { "name": "TOLL_FEE_1", "description": "Child toll percentage 1" },
+          { "name": "TOLL_FEE_2", "description": "Child toll percentage 2" },
+          { "name": "TOLL_FEE_3", "description": "Child toll percentage 3" }
+        ],
+        "deliveryItemSpecification": {
+          "quantity": "^[1-9][0-9]*$",
+          "weight": ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6"],
+          "categories": ["Spaghetti", "Hotdog", "Burger", "Fried Chicken", "Chicharon", "Tapa"],
+          "handlingInstructions": ["Fragile"]
+        }
+      }
+    ]
+  },
+  {
+    "locode": "TW TXG",
+    "name": "Taichung",
+    "services": [
+      {
+        "key": "MOTORCYCLE",
+        "description": "Ideal for groceries, food, documents, small parcels",
+        "dimensions": {
+          "length": { "value": "0.3", "unit": "m" },
+          "width": { "value": "0.6", "unit": "m" },
+          "height": { "value": "0.4", "unit": "m" }
+        },
+        "load": { "value": "20", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "THERMAL_BAG_1", "description": "Lalabag" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "MPV",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "200", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "MOVING_SERVICE", "description": "Moving goods upstair (Require lift)" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "TRUCK175",
+        "description": "Ideal for house moving, banner ads, large merchandises",
+        "dimensions": {
+          "length": { "value": "2", "unit": "m" },
+          "width": { "value": "1.2", "unit": "m" },
+          "height": { "value": "1.2", "unit": "m" }
+        },
+        "load": { "value": "500", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          { "name": "MOVING_SERVICE", "description": "Self-served House Moving" },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving upstairs with elevator"
+          },
+          { "name": "TAILBOARD", "description": "Tailgate" },
+          { "name": "REFRIGERATED_UV_1", "description": "Refrigerator (0°C - 7°C)" },
+          { "name": "REFRIGERATED_UV_2", "description": "Freezer (below -15°C)" },
+          { "name": "MOVING_SERVICE_4", "description": "Portage fee (Over 20 items, Max 20KG)" },
+          {
+            "name": "MOVING_SERVICE_2",
+            "description": "Moving upstairs without elevator (B1&2-3F)"
+          },
+          { "name": "MOVING_SERVICE_3", "description": "Moving upstairs without elevator (4-6F)" },
+          { "name": "MOVING_SERVICE_1", "description": "Professional House Moving" }
+        ],
+        "deliveryItemSpecification": {}
+      },
+      {
+        "key": "VAN",
+        "description": "Ideal for merchants box, light furniture, fragile goods",
+        "dimensions": {
+          "length": { "value": "1.5", "unit": "m" },
+          "width": { "value": "1", "unit": "m" },
+          "height": { "value": "1", "unit": "m" }
+        },
+        "load": { "value": "300", "unit": "kg" },
+        "specialRequests": [
+          { "name": "FRAGILE_GOODS", "description": "Fragile Goods" },
+          { "name": "CASH_ON_DELIVERY", "description": "Paid by recipient" },
+          {
+            "name": "PURCHASE_SERVICE_1",
+            "description": "HelpBuy (Cash Order Max $2000/Corporate Credit Order Max $5000)"
+          },
+          {
+            "name": "MOVING_GOODS_UPSTAIR_REQUIRE_LIFT",
+            "description": "Moving goods upstair (Require lift)"
+          }
+        ],
+        "deliveryItemSpecification": {}
+      }
+    ]
+  }
+]

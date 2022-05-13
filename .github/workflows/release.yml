@@ -54,7 +54,7 @@ jobs:
   #         RELEASE_URL: ${{ steps.github_release.outputs.release_url }}
 
   publish_package_to_npm_gpr:
-    needs: [publish_draft_release_on_version_bump]
+    needs: [update_draft_release]
     runs-on: ubuntu-latest
     steps: # Does a checkout of your repository at the pushed commit SHA
       - uses: actions/checkout@v2
