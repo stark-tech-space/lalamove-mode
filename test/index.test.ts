@@ -74,7 +74,7 @@ describe('Lalamove Integration Test', () => {
       isRouteOptimized: true,
     });
 
-    // console.log(quotation!.specialRequest);
+    // console.log(quotation);
 
     expect(quotation).toHaveProperty('quotationId');
     expect(quotation).toHaveProperty('scheduleAt');
@@ -85,7 +85,7 @@ describe('Lalamove Integration Test', () => {
     expect(quotation).toHaveProperty('stops');
     expect(quotation).toHaveProperty('isRouteOptimized');
     expect(quotation).toHaveProperty('priceBreakdown');
-    expect(quotation).toHaveProperty('item');
+    // expect(quotation).toHaveProperty('item');
     // expect(quotation).toHaveProperty("cashOnDelivery");
   });
 

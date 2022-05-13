@@ -55,6 +55,7 @@ jobs:
 
   publish_package_to_npm_gpr:
     needs: [update_draft_release]
+    # needs: [publish_draft_release_on_version_bump]
     runs-on: ubuntu-latest
     steps: # Does a checkout of your repository at the pushed commit SHA
       - uses: actions/checkout@v2
