@@ -26,7 +26,7 @@ export enum City {
 }
 
 export enum LanguagesTW {
-  Zh_TW = 'zh_TW',
+  ZH_TW = 'zh_TW',
 }
 
 export enum LanguagesHK {

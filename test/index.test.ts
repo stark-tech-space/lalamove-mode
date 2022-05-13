@@ -48,7 +48,7 @@ describe('Lalamove Integration Test', () => {
         // illegal
         SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
       ],
-      language: LanguagesTW.Zh_TW,
+      language: LanguagesTW.ZH_TW,
       stops: [
         {
           coordinates: {
