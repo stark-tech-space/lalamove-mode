@@ -37,21 +37,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish_draft_release_on_version_bump:
-    needs: [update_draft_release]
-    runs-on: ubuntu-latest
-    steps:
-      # Does a checkout of your repository at the pushed commit SHA
-      - uses: actions/checkout@v2
-      # Checks for a version bump to publish an existing Draft Release
-      - id: github_release
-        uses: JamesMGreene/node-draft-releaser@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Show the Release URL, just for fun
-      - run: echo "Released at $RELEASE_URL"
-        env:
-          RELEASE_URL: ${{ steps.github_release.outputs.release_url }}
+  # publish_draft_release_on_version_bump:
+  #   needs: [update_draft_release]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # Does a checkout of your repository at the pushed commit SHA
+  #     - uses: actions/checkout@v2
+  #     # Checks for a version bump to publish an existing Draft Release
+  #     - id: github_release
+  #       uses: JamesMGreene/node-draft-releaser@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     # Show the Release URL, just for fun
+  #     - run: echo "Released at $RELEASE_URL"
+  #       env:
+  #         RELEASE_URL: ${{ steps.github_release.outputs.release_url }}
 
   publish_package_to_npm_gpr:
     needs: [publish_draft_release_on_version_bump]
