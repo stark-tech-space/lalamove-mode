@@ -24,7 +24,7 @@ jobs:
       - name: Run Tests
         run: npm test
         env:
-          LALAMOVE_BASE_URL: ${{ secrets.LALAMOVE_BASE_URL }}
+          LALAMOVE_BASE_URL: ${{ secrets.LALAMOVE_V3_BASE_URL }}
           LALAMOVE_API_KEY: ${{ secrets.LALAMOVE_API_KEY }}
           LALAMOVE_API_SECRET: ${{ secrets.LALAMOVE_API_SECRET }}
 

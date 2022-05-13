@@ -4,32 +4,87 @@ import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 import * as superagent from 'superagent';
 
-export enum Country {
+export enum Market {
+  TAIWAN = 'TW',
+  BRASIL = 'BR',
+  HONGKONG = 'HK',
+  INDONESIA = 'ID',
+  MALAYSIA = 'MY',
+  MEXICO = 'MX',
+  PHILIPPINES = 'PH',
+  SINGAPORE = 'SG',
+  THAILAND = 'TH',
+  VIETNAM = 'VN',
+}
+
+export enum City {
   TW_TPE = 'TW_TPE',
   TW_TXG = 'TW_TXG',
   TW_KHH = 'TW_KHH',
+  // TW_KNH = 'TW_KNH', not support yet
+  TW_TNN = 'TW_TNN',
 }
 
 export enum LanguagesTW {
-  zh_TW = 'zh_TW',
+  ZH_TW = 'zh_TW',
+}
+
+export enum LanguagesHK {
+  EN_HK = 'en_HK',
+  ZH_HK = 'zh_HK',
+}
+
+export enum LanguagesBR {
+  EN_BR = 'en_BR',
+  PT_BR = 'pt_BR',
+}
+
+export enum LanguagesID {
+  EN_ID = 'en_ID',
+  ID_ID = 'id_ID',
+}
+
+export enum LanguagesMY {
+  EN_MY = 'en_MY',
+  MS_MY = 'ms_MY',
+}
+
+export enum LanguagesMX {
+  EN_MX = 'en_MX',
+  ES_MX = 'es_MX',
+}
+
+export enum LanguagesPH {
+  EN_PH = 'en_PH',
+}
+
+export enum LanguagesSG {
+  en_SG = 'en_SG',
+}
+
+export enum LanguagesTH {
+  TH_TH = 'th_TH',
+  EN_TH = 'en_TH',
+}
+
+export enum LanguagesVN {
+  EN_VN = 'en_VN',
+  VI_VN = 'vi_VN',
 }
 
 export enum HttpMethod {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
+  DELETE = 'DELETE',
 }
 
 export enum ServiceTypeTW {
   MOTORCYCLE = 'MOTORCYCLE',
-  MPV = 'MPV',
   VAN = 'VAN',
   TRUCK175 = 'TRUCK175',
-}
-
-export enum SpecialRequestTW {
-  LALABAG = 'LALABAG',
-  HELP_BUY = 'HELP_BUY',
+  SUV = 'SUV',
+  TRUCK330 = 'TRUCK330',
 }
 
 export enum LalamoveOrderStatus {
@@ -46,163 +101,585 @@ export type lalamove = {
   baseUrl: string;
   apiKey: string;
   apiSecret: string;
-  country: Country;
+  market: Market;
   defaultTimeout?: number;
 };
 
 export type ApiInfo = {
-  country: Country;
+  market: Market;
   apiKey: string;
   apiSecret: string;
 };
 
 export type Languages = {
-  TW_TPE: LanguagesTW;
-  TW_TXG: LanguagesTW;
-  TW_KHH: LanguagesTW;
+  [Market.TAIWAN]: LanguagesTW;
+  [Market.HONGKONG]: LanguagesHK;
+  [Market.BRASIL]: LanguagesBR;
+  [Market.THAILAND]: LanguagesTH;
+  [Market.INDONESIA]: LanguagesID;
+  [Market.MEXICO]: LanguagesMX;
+  [Market.MALAYSIA]: LanguagesMY;
+  [Market.SINGAPORE]: LanguagesSG;
+  [Market.VIETNAM]: LanguagesVN;
+  [Market.PHILIPPINES]: LanguagesPH;
 };
 
-export type requestInfo = {
+export type RequestInfo = {
   url: string;
   method: HttpMethod;
   body?: object;
 };
 
-export type ServiceType = {
-  TW_TPE: ServiceTypeTW;
-  TW_TXG: ServiceTypeTW;
-  TW_KHH: ServiceTypeTW;
+// TODO: other market serviceType
+export const SERVICE_TYPE_MAP = {
+  [Market.TAIWAN]: ServiceTypeTW,
+  [Market.BRASIL]: ServiceTypeTW,
+  [Market.HONGKONG]: ServiceTypeTW,
+  [Market.INDONESIA]: ServiceTypeTW,
+  [Market.MALAYSIA]: ServiceTypeTW,
+  [Market.MEXICO]: ServiceTypeTW,
+  [Market.PHILIPPINES]: ServiceTypeTW,
+  [Market.SINGAPORE]: ServiceTypeTW,
+  [Market.THAILAND]: ServiceTypeTW,
+  [Market.VIETNAM]: ServiceTypeTW,
 };
+
+// TODO:  & other market serviceType
+export type ServiceType = ServiceTypeTW;
 
 export type Location = {
   lat: number;
   lng: number;
 };
 
-export type Address = {
-  displayString: string;
-  country?: Country;
-};
-
-export type WayPoint = {
-  location: Location;
-  addresses: { [languageCode in Languages[Country]]?: Address };
+export type Distance = {
+  value: string;
+  unit: string;
 };
 
 export type Contact = {
   name: string;
-  phone: string;
+  phone: string; // E.164 format
 };
 
-export type DeliveryInfo = {
-  stopIndex: number;
-  receiver: Contact;
-  remarks: { [key: string]: string };
-};
-
-export type SpecialRequest = {
-  TW_TPE: SpecialRequestTW[];
-  TW_TXG: SpecialRequestTW[];
-  TW_KHH: SpecialRequestTW[];
-};
-
-export type quoteRequest = {
-  serviceType: ServiceType[Country];
-  destinations: WayPoint[];
-  deliveryInfo: DeliveryInfo[];
-  sender: Contact;
-  scheduleAt: Date;
-  specialRequest: SpecialRequest[Country];
-};
-
-export interface orderPlacementRequest extends quoteRequest {
-  totalFee: {
-    amount: string;
-    currency: string;
-  };
-  smsForReceiver: boolean;
-}
-
-export type quoteResponse = {
-  totalFee: string;
-  totalFeeCurrency: string;
-};
-
-export type orderPlacementResponse = {
-  customerOrderId: string;
-  orderRef: string;
-};
-
-export type orderDetailResponse = {
-  status: LalamoveOrderStatus;
-  price: {
-    amount: string;
-    currency: string;
-  };
-  driverId: string;
-};
-
-export type driverDetailResponse = {
-  name: string;
-  phone: string;
-  plateNumber: string;
-  photo: string;
-};
-
-export type driverLocationResponse = {
-  location: {
+export type DeliveryStop = {
+  coordinates: {
     lat: string;
     lng: string;
   };
-  updatedAt: string;
+  address: string;
 };
 
-export type cancelOrderResponse = object;
-
-export type addPriorityFeeResponse = object;
-
-export const serviceType: {
-  TW_TPE: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-  TW_TXG: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-  TW_KHH: { [serviceTypeKey in ServiceTypeTW]: ServiceTypeTW };
-} = {
-  TW_TPE: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
-  TW_TXG: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
-  TW_KHH: {
-    MOTORCYCLE: ServiceTypeTW.MOTORCYCLE,
-    MPV: ServiceTypeTW.MPV,
-    VAN: ServiceTypeTW.VAN,
-    TRUCK175: ServiceTypeTW.TRUCK175,
-  },
+export type RawDeliveryStop = Omit<DeliveryStop, 'coordinates'> & {
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
 };
 
-export const specialRequest: {
-  TW_TPE: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
-  TW_TXG: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
-  TW_KHH: { [specialRequestKey in SpecialRequestTW]: SpecialRequestTW };
-} = {
-  TW_TPE: {
-    HELP_BUY: SpecialRequestTW.HELP_BUY,
-    LALABAG: SpecialRequestTW.LALABAG,
-  },
-  TW_TXG: {
-    HELP_BUY: SpecialRequestTW.HELP_BUY,
-    LALABAG: SpecialRequestTW.LALABAG,
-  },
-  TW_KHH: {
-    HELP_BUY: SpecialRequestTW.HELP_BUY,
-    LALABAG: SpecialRequestTW.LALABAG,
-  },
+export type DeliveryStopWithId = DeliveryStop & {
+  stopId: string;
+};
+
+export type CashOnDelivery = {
+  amount: string;
+};
+
+/**
+ * scheduleAt is Date but in the end need to covert to string.
+ *  Need city and serviceType to filter valid SpecialRequest
+ */
+export type RawQuoteRequest = Omit<QuoteRequest, 'scheduleAt' | 'stops'> & {
+  city: City;
+  scheduleAt?: Date;
+  stops: Array<RawDeliveryStop>;
+};
+
+export type QuoteRequest = {
+  serviceType: ServiceType;
+  language: Languages[Market];
+  stops: Array<DeliveryStop>;
+  scheduleAt?: string; // UTC ISO8601 format
+  specialRequests?: Array<SpecialRequest>;
+  isRouteOptimized?: boolean; // multiple drop off
+  item?: Item;
+  cashOnDelivery?: CashOnDelivery;
+};
+
+/**
+ * in production not offer Weight to choose yet (TW). plz send empty string
+ */
+export enum Weight {}
+
+/**
+ * in production not offer category to choose yet (TW). plz send empty array
+ */
+export enum Category {}
+
+export enum HandlingInstructions {
+  FRAGILE = 'Fragile',
+  KEEP_DRY = 'Keep dry',
+}
+
+export type Item = {
+  quantity: string;
+  weight: Weight | '';
+  categories: Array<Category>;
+  handlingInstructions: Array<HandlingInstructions>;
+};
+
+export type DeliveryDetails = {
+  stopId: string;
+  name: string;
+  phone: string;
+  remarks?: string;
+};
+
+/**
+ * @param quotationId use getQuote to get quotationId in response body
+ * @param sender  name, phone, stopId  .This information will be displayed to the driver.
+ * @param recipients. array of  stopId, name, phone, remarks(optional)  An array of DeliveryDetails, containing recipient contact and instruction per stop
+ * @param isRecipientSMSEnabled (optional) Send delivery updates via SMS to THE recipient, or the recipient of the LAST STOP for multi-stop orders once the order has been picked-up by the driver.
+Default to true
+ * @param isPODEnabled Request driver to carry out "Proof Of Delivery" for all stops in the order. Default to false
+ * @param partner (optional) Specify Partner's name for effective tracking and organization. This field is only applicable for channel partners. Please contact partner.support@lalamove.com if you would like to request for your Partner ID
+ * @param metadata (optional) An object with key-value pairs containing client-specific information
+ */
+export type OrderPlacementRequest = {
+  quotationId: string;
+  sender: Contact & {
+    stopId: string;
+  };
+  recipients: Array<DeliveryDetails>;
+  isRecipientSMSEnabled?: boolean;
+  isPODEnabled?: boolean;
+  partner?: string;
+  metadata?: Record<string, any>;
+};
+
+/**
+ * @param quotationId need to send for place order request
+ * @param scheduleAt Pick up time in UTC timezone and ISO 8601 format
+ * @param priceBreakdown
+ * @param expiresAt display date string. (5 mins)
+ * @param item optional but recommend to have
+ * @param SpecialRequest optional
+ */
+export type QuoteResponse = {
+  quotationId: string;
+  scheduleAt: string;
+  serviceType: ServiceTypeTW;
+  SpecialRequest?: Array<SpecialRequest>;
+  expiresAt: string; // 5 mins
+  priceBreakdown: PriceBreakdown;
+  stops: Array<Stop>;
+  item?: Item;
+};
+
+/**
+ * Breakdown of the delivery price
+ * @param base
+ * @param extraMileage
+ * @param surcharge
+ * @param priorityFee optional
+ * @param total
+ * @param totalBeforeOptimization
+ * @param totalExcludePriorityFee
+ * @param currency ex: THB
+ */
+export type PriceBreakdown = {
+  base: string;
+  extraMileage: string;
+  surcharge: string;
+  totalBeforeOptimization: string;
+  totalExcludePriorityFee: string;
+  priorityFee?: string;
+  total: string;
+  currency: string;
+};
+
+/**
+ * POD = poof of delivery
+ * @param PENDING The driver hasn't completed the delivery to the stop yet
+ * @param DELIVERED The driver has completed the order and has taken a photo at the stop
+ * @param SIGNED The driver has completed the order and received recipient's signature
+ * @param FAILED The driver couldn't complete the delivery to the stop
+ */
+export enum PODStauts {
+  PENDING = 'PENDING',
+  DELIVERED = 'DELIVERED',
+  SIGNED = 'SIGNED',
+  FAILED = 'FAILED',
+}
+
+export type Stop = DeliveryStopWithId & {
+  name?: string;
+  phone?: string;
+  POD?: {
+    status: PODStauts;
+    image: string;
+    deliveredAt: string;
+  };
+};
+
+export type OrderPlacementResponse = {
+  orderId: string;
+  quotationId: string;
+  priceBreakdown: PriceBreakdown;
+  priorityFee?: string;
+  driverId: string;
+  shareLink: string;
+  status: LalamoveOrderStatus;
+  distance: Distance;
+  stops: Array<Stop>;
+  metadata: Record<string, any>;
+  cashOnDelivery: CashOnDelivery;
+};
+
+export type OrderDetailResponse = {
+  orderId: string;
+  quotationId: string;
+  priceBreakdown: PriceBreakdown;
+  priorityFee: string;
+  status: LalamoveOrderStatus;
+  cashOnDelivery: CashOnDelivery;
+  driverId: string;
+  shareLink: string;
+  distance: Distance;
+  stops: Array<Stop>;
+  metadata: Record<string, any>;
+};
+
+/**
+ * @param driverId <LALAMOVE_DRIVER_ID>
+ * @param name Name of the driver
+ * @param phone Phone number of the driver. To be encrypted in the future for privacy
+ * @param plateNumber License plate of the driver's vehicle. First two digits and the last digit is masked with asterisk for privacy
+ * @param coordinates Last updated location of the driver
+ */
+export type DriverDetailResponse = {
+  driverId: string;
+  name: string;
+  phone: string;
+  plateNumber: string;
+  coordinates: {
+    lat: string;
+    lng: string;
+    updatedAt: string;
+  };
+};
+
+export type CancelOrderResponse = object;
+
+export type AddPriorityFeeResponse = {
+  orderId: string;
+  quotationId: string;
+  priceBreakdown: PriceBreakdown;
+  shareLink: string;
+  driverId: string;
+  status: LalamoveOrderStatus;
+  distance: Distance;
+  stops: Array<Stop>;
+};
+
+export enum SpecialRequest {
+  EXTRA_WAITING_TIME = 'PARENT_EXTRA_TIME',
+  EXTRA_WAITING_1HR = 'WAITING_TIME_1',
+  EXTRA_WAITING_2HR = 'WAITING_TIME_2',
+  LALABAG = 'THERMAL_BAG_1',
+  HELP_BUY = 'PURCHASE_SERVICE_1',
+  FRAGILE_GOODS = 'FRAGILE_GOODS',
+  MOVING_UPSTAIRS = 'PARENT_MOVING_SERVICE',
+  PAID_BY_RECIPIENT = 'CASH_ON_DELIVERY',
+  REQUIRE_LIFT = 'MOVING_GOODS_UPSTAIR_REQUIRE_LIFT',
+
+  TAILBOARD = 'TAILBOARD',
+  REFRIGERATOR = 'REFRIGERATED_UV_1',
+  FREEZER = 'REFRIGERATED_UV_2',
+  SELF_SERVED_HOUSE_MOVING = 'MOVING_SERVICE',
+  PROFESSIONAL_HOUSE_MOVING = 'MOVING_SERVICE_1',
+  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F = 'MOVING_SERVICE_2',
+  MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F = 'MOVING_SERVICE_3',
+  PORTAGE_FEE = 'MOVING_SERVICE_4',
+}
+
+const getValidSpecialRequests = ({
+  city,
+  serviceType,
+  specialRequestsFromRequest = [],
+}: {
+  serviceType: ServiceType;
+  city: City;
+  specialRequestsFromRequest: Array<SpecialRequest>;
+}) => {
+  let validSpecialRequest: Array<SpecialRequest> = [];
+  switch (city) {
+    case City.TW_TPE: {
+      switch (serviceType) {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            SpecialRequest.LALABAG,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.SUV: {
+          validSpecialRequest = [
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.LALABAG,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.TRUCK330: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.FREEZER,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+            SpecialRequest.MOVING_UPSTAIRS,
+          ];
+          break;
+        }
+      }
+      break;
+    }
+    case City.TW_TXG: {
+      switch (serviceType) {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            SpecialRequest.LALABAG,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.SUV: {
+          validSpecialRequest = [
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.REQUIRE_LIFT,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+      }
+      break;
+    }
+    case City.TW_KHH: {
+      switch (serviceType) {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.LALABAG,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.SUV: {
+          validSpecialRequest = [
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            // TODO: 這裡的SELF_SERVED_HOUSE_MOVING對照到應該是MOVING_SERVICE_2而不是1，其餘的都是對照到1
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+      }
+      break;
+    }
+    case City.TW_TNN: {
+      switch (serviceType) {
+        case SERVICE_TYPE_MAP.TW.MOTORCYCLE: {
+          validSpecialRequest = [
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.LALABAG,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.SUV: {
+          validSpecialRequest = [
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+            SpecialRequest.EXTRA_WAITING_TIME,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.TRUCK175: {
+          validSpecialRequest = [
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.TAILBOARD,
+            SpecialRequest.REFRIGERATOR,
+            SpecialRequest.FREEZER,
+            SpecialRequest.PORTAGE_FEE,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.SELF_SERVED_HOUSE_MOVING,
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+        case SERVICE_TYPE_MAP.TW.VAN: {
+          validSpecialRequest = [
+            SpecialRequest.MOVING_UPSTAIRS,
+            SpecialRequest.HELP_BUY,
+            SpecialRequest.FRAGILE_GOODS,
+            SpecialRequest.PAID_BY_RECIPIENT,
+            SpecialRequest.REQUIRE_LIFT,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_B1_AND_2_TO_3F,
+            SpecialRequest.MOVING_UPSTAIRS_WITHOUT_ELEVATOR_4_TO_6F,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_1HR,
+            SpecialRequest.EXTRA_WAITING_2HR,
+          ];
+          break;
+        }
+      }
+    }
+  }
+
+  return specialRequestsFromRequest.filter((req) => validSpecialRequest.includes(req));
 };
 
 export class LalamoveException extends Error {
@@ -219,6 +696,13 @@ export class LalamoveException extends Error {
   }
 }
 
+export enum Reason {
+  DRIVER_LATE = 'DRIVER_LATE',
+  DRIVER_ASKED_CHANGE = 'DRIVER_ASKED_CHANGE',
+  DRIVER_UNRESPONSIVE = 'DRIVER_UNRESPONSIVE',
+  DRIVER_RUDE = 'DRIVER_RUDE',
+}
+
 const UTC_ZERO_TIMEZONE = 'Europe/London';
 
 export class Lalamove {
@@ -227,9 +711,9 @@ export class Lalamove {
   private defaultTimeout: number;
 
   // Lalamove class constructor
-  constructor({ baseUrl, apiKey, apiSecret, country, defaultTimeout = 10000 }: lalamove) {
+  constructor({ baseUrl, apiKey, apiSecret, market, defaultTimeout = 10000 }: lalamove) {
     this.apiInfo = {
-      country,
+      market,
       apiKey,
       apiSecret,
     };
@@ -242,9 +726,23 @@ export class Lalamove {
     return CryptoJS.HmacSHA256(rawForSignature, apiSecret).toString();
   }
 
+  private stopTransform(stops: RawDeliveryStop): DeliveryStop {
+    let {
+      coordinates: { lng, lat },
+    } = stops;
+
+    return {
+      ...stops,
+      coordinates: {
+        lat: lat.toString(),
+        lng: lng.toString(),
+      },
+    };
+  }
+
   // do request with lalamove api
-  private async request({ url, method, body = {} }: requestInfo): Promise<any> {
-    const { country, apiKey, apiSecret } = this.apiInfo;
+  private async request({ url, method, body = {} }: RequestInfo): Promise<any> {
+    const { market, apiKey, apiSecret } = this.apiInfo;
     const bodyStr = method == HttpMethod.GET ? '' : JSON.stringify(body);
 
     const tokenGenerate = () => {
@@ -264,32 +762,42 @@ export class Lalamove {
           fetchResult = await superagent
             .get(`${this.baseUrl}${url}`)
             .set('Authorization', `hmac ${tokenGenerate()}`)
-            .set('X-LLM-Country', country)
+            .set('Market', market)
             .set('X-Request-ID', uuidv4())
             .set('Content-Type', 'application/json');
           break;
         case HttpMethod.POST:
           fetchResult = await superagent
             .post(`${this.baseUrl}${url}`)
-            .send(body)
             .set('Authorization', `hmac ${tokenGenerate()}`)
-            .set('X-LLM-Country', country)
+            .set('Market', market)
             .set('X-Request-ID', uuidv4())
-            .set('Content-Type', 'application/json');
+            .set('Content-Type', 'application/json')
+            .send(body);
           break;
         case HttpMethod.PUT:
           fetchResult = await superagent
             .put(`${this.baseUrl}${url}`)
             .send(body)
             .set('Authorization', `hmac ${tokenGenerate()}`)
-            .set('X-LLM-Country', country)
+            .set('Market', market)
+            .set('X-Request-ID', uuidv4())
+            .set('Content-Type', 'application/json');
+          break;
+        case HttpMethod.DELETE:
+          fetchResult = await superagent
+            .delete(`${this.baseUrl}${url}`)
+            .send(body)
+            .set('Authorization', `hmac ${tokenGenerate()}`)
+            .set('Market', market)
             .set('X-Request-ID', uuidv4())
             .set('Content-Type', 'application/json');
           break;
       }
-    } catch (error) {
+    } catch (error: any) {
       const status = error.status;
       const response: superagent.Response = error.response;
+
       throw new Error(
         JSON.stringify({
           status,
@@ -298,7 +806,7 @@ export class Lalamove {
         }),
       );
     }
-    const responseData = fetchResult.body;
+    const responseData = fetchResult.body.data;
 
     return responseData || {};
   }
@@ -314,140 +822,136 @@ export class Lalamove {
     return `${dateString}T${timeString}Z`;
   }
 
-  getCountry() {
-    return this.apiInfo.country;
+  getMarket() {
+    return this.apiInfo.market;
   }
 
-  setCountry(country: Country) {
-    this.apiInfo.country = country;
-  }
-
-  private stopTransform(stop: WayPoint) {
-    let { location, addresses } = stop;
-    if (!addresses.zh_TW) {
-      throw new LalamoveException(400, {
-        message: 'addresses with "zh_TW" doesn\'t exist',
-      });
-    }
-
-    addresses.zh_TW.country = this.apiInfo.country;
-    return {
-      location: {
-        lat: location.lat.toString(),
-        lng: location.lng.toString(),
-      },
-      addresses,
-    };
+  setMarket(market: Market) {
+    this.apiInfo.market = market;
   }
 
   async getQuote({
     serviceType,
-    destinations,
-    deliveryInfo,
-    sender,
+    language,
+    stops,
     scheduleAt,
-    specialRequest,
-  }: quoteRequest): Promise<quoteResponse> {
-    // create request body
-    const requestBody = {
+    specialRequests: specialRequestsFromRequest = [],
+    isRouteOptimized,
+    item,
+    cashOnDelivery,
+    city,
+  }: RawQuoteRequest): Promise<QuoteResponse> {
+    const validSpecialRequests = getValidSpecialRequests({
+      city,
       serviceType,
-      stops: destinations.map((destination) => this.stopTransform(destination)),
-      deliveries: deliveryInfo.map(({ stopIndex, receiver, remarks }) => {
-        return {
-          toStop: stopIndex,
-          toContact: receiver,
-          // generate remarks string
-          remarks: Object.keys(remarks).reduce((acc, remarkKey) => {
-            const remark = remarks[remarkKey];
-            return `${acc}\r\n${remarkKey}: ${remark}`;
-          }, ''),
-        };
-      }),
-      requesterContact: sender,
-      scheduleAt: this.dateStringProcess(scheduleAt),
-      specialRequests: specialRequest,
+      specialRequestsFromRequest,
+    });
+
+    // create request body
+    const requestBody: QuoteRequest = {
+      serviceType,
+      language,
+      stops: stops.map((stop) => this.stopTransform(stop)),
+      specialRequests: validSpecialRequests,
+      isRouteOptimized,
+      item,
+      cashOnDelivery,
+      scheduleAt: scheduleAt && this.dateStringProcess(scheduleAt),
     };
 
     return this.request({
-      url: '/v2/quotations',
+      url: '/v3/quotations',
       method: HttpMethod.POST,
-      body: requestBody,
+      body: { data: requestBody },
     });
   }
 
   async placeOrder({
-    serviceType,
-    destinations,
-    deliveryInfo,
+    quotationId,
     sender,
-    scheduleAt,
-    specialRequest,
-    totalFee,
-    smsForReceiver,
-  }: orderPlacementRequest): Promise<orderPlacementResponse> {
+    recipients,
+    isRecipientSMSEnabled,
+    isPODEnabled,
+    partner,
+    metadata,
+  }: OrderPlacementRequest): Promise<OrderPlacementResponse> {
     // create request body
     const requestBody = {
-      serviceType,
-      stops: destinations.map(this.stopTransform.bind(this)),
-      deliveries: deliveryInfo.map(({ stopIndex, receiver, remarks }) => {
-        return {
-          toStop: stopIndex,
-          toContact: receiver,
-          // generate remarks string
-          remarks: Object.keys(remarks).reduce((acc, remarkKey) => {
-            const remark = remarks[remarkKey];
-            return `${acc}\r\n${remarkKey}: ${remark}`;
-          }, ''),
-        };
-      }),
-      requesterContact: sender,
-      scheduleAt: this.dateStringProcess(scheduleAt),
-      specialRequests: specialRequest,
-      quotedTotalFee: totalFee,
-      sms: smsForReceiver,
+      quotationId,
+      sender,
+      recipients,
+      isRecipientSMSEnabled,
+      isPODEnabled,
+      metadata,
+      partner,
     };
 
     return this.request({
-      url: '/v2/orders',
+      url: '/v3/orders',
       method: HttpMethod.POST,
-      body: requestBody,
+      body: { data: requestBody },
     });
   }
 
-  async orderDetail(orderId: string): Promise<orderDetailResponse> {
+  async orderDetail(orderId: string): Promise<OrderDetailResponse> {
     return this.request({
-      url: `/v2/orders/${orderId}`,
+      url: `/v3/orders/${orderId}`,
       method: HttpMethod.GET,
     });
   }
 
-  async driverDetail(orderId: string, driverId: string): Promise<driverDetailResponse> {
+  /**
+   *
+   * This information is available starting 1 hour prior to datetime specified in scheduleAt datetime and remain accessible until the order is completed. Attempts made outside of this time window will get 403 Forbidden response.
+   */
+  async driverDetail(orderId: string, driverId: string): Promise<DriverDetailResponse> {
     return this.request({
-      url: `/v2/orders/${orderId}/drivers/${driverId}`,
+      url: `/v3/orders/${orderId}/drivers/${driverId}`,
       method: HttpMethod.GET,
     });
   }
 
-  async driverLocation(orderId: string, driverId: string): Promise<driverLocationResponse> {
+  async cancelOrder(orderId: string): Promise<CancelOrderResponse> {
     return this.request({
-      url: `/v2/orders/${orderId}/drivers/${driverId}/location`,
+      url: `/v3/orders/${orderId}`,
+      method: HttpMethod.DELETE,
+    });
+  }
+
+  /**
+   *
+   * after 15 mins can change driver
+   */
+  async changeDriver({
+    orderId,
+    driverId,
+    reason,
+  }: {
+    orderId: string;
+    driverId: string;
+    reason: Reason;
+  }) {
+    const requestBody = { reason };
+    return this.request({
+      url: `/v3/orders/${orderId}/drivers/${driverId}`,
+      method: HttpMethod.DELETE,
+      body: { data: requestBody },
+    });
+  }
+
+  async addPriorityFee(orderId: string, tips: number): Promise<AddPriorityFeeResponse> {
+    const requestBody = { priorityFee: tips.toString() };
+    return this.request({
+      url: `/v3/orders/${orderId}/priority-fee`,
+      method: HttpMethod.POST,
+      body: { data: requestBody },
+    });
+  }
+
+  async getCityInfo() {
+    return this.request({
+      url: '/v3/cities',
       method: HttpMethod.GET,
-    });
-  }
-
-  async cancelOrder(orderId: string): Promise<cancelOrderResponse> {
-    return this.request({
-      url: `/v2/orders/${orderId}/cancel`,
-      method: HttpMethod.PUT,
-    });
-  }
-
-  async addPriorityFee(orderId: string, tips: number): Promise<addPriorityFeeResponse> {
-    const requestBody = { tips: tips.toString() };
-    return this.request({
-      url: `/v2/orders/${orderId}/tips`,
-      method: HttpMethod.PUT,
-      body: requestBody,
     });
   }
 }
