@@ -40,13 +40,12 @@ describe('Lalamove Integration Test', () => {
     const orderTime = addMinutes(15, new Date());
 
     quotation = await lalamove.getQuote({
-      city: City.TW_TPE,
       serviceType: SERVICE_TYPE_MAP.TW.VAN,
       specialRequests: [
         // legal
         SpecialRequest.FRAGILE_GOODS,
         // illegal
-        SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
+        // SpecialRequest.PROFESSIONAL_HOUSE_MOVING,
       ],
       language: LanguagesTW.ZH_TW,
       stops: [
