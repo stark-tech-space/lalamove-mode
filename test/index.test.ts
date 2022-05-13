@@ -69,7 +69,7 @@ describe('Lalamove Integration Test', () => {
         quantity: '3',
         weight: '',
         categories: [],
-        handlingInstructions: [HandlingInstructions.KEEP_UPRIGHT],
+        handlingInstructions: [HandlingInstructions.FRAGILE],
       },
       isRouteOptimized: true,
     });
